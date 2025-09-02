@@ -1,6 +1,6 @@
 CXX=g++
-CPPFLAGS=-std=c++11
-LDFLAGS=-LC:\Program Files\ncl\lib
+CPPFLAGS=-std=c++11 -I"C:\Program Files\ncl\include"
+LDFLAGS=-L"C:\Program Files\ncl\lib\ncl"
 LDLIBS=-lncl
 
 all: nexus2phylojson
