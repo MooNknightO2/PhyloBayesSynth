@@ -1,0 +1,12 @@
+CXX=g++
+CPPFLAGS=-std=c++11
+LDFLAGS=-LC:\Program Files\ncl\lib
+LDLIBS=-lncl
+
+all: nexus2phylojson
+
+nexus2phylojson: nexus2phylojson.o
+	$(CXX) -o nexus2phylojson nexus2phylojson.o $(LDLIBS) $(LDFLAGS)
+
+clean:
+	rm nexus2phylojson.o
