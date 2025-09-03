@@ -1,14 +1,12 @@
 import random
 from typing import Any, Tuple
+from observation import Observation
 
 # to be realized
 class Nonterminal:
     pass
 
 class Expression:
-    pass
-
-class Observation:
     pass
 
 def Uniform(distribution: list) -> Any:
