@@ -6,7 +6,7 @@ LDLIBS=-lncl
 all: nexus2phylojson
 
 nexus2phylojson: nexus2phylojson.o
-	$(CXX) -o nexus2phylojson nexus2phylojson.o $(LDLIBS) $(LDFLAGS)
+	$(CXX) -o nexus2phylojson nexus2phylojson.o $(LDFLAGS) $(LDLIBS)
 
 clean:
 	rm nexus2phylojson.o
