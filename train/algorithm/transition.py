@@ -1,16 +1,13 @@
 import random
 from typing import Any, Tuple
 from observation import Observation
-
-# to be realized
-class Nonterminal:
-    pass
-
-class Expression:
-    pass
+from expression import Nonterminal
+from expression import Expression
 
 def Uniform(distribution: list) -> Any:
     return random.choice(distribution)
+
+# to be realized
 
 def Sever(expression: Expression, node: Any) -> Tuple[Nonterminal, Expression]:
     raise NotImplementedError("not implemented")
