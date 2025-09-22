@@ -4,6 +4,9 @@ from typing import Optional
 class Expression:
     pass
 
+class Nonterminal:
+    pass
+
 class N3(Expression):
     def __init__(self):
         self._type = self.__class__.__name__
