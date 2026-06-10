@@ -130,8 +130,36 @@ def _eval_likelihood(expr, tree_data):
     return evaluate_likelihood(expr, tree_data)
 
 
+def _hill_climb_params(expression, tree_data, config, n_steps):
+    """对表达式做若干步贪心参数扰动 (仅改善, 不恶化).
+
+    用于结构提议后的参数预调: 让新结构有机会调优参数,
+    避免因随机初始参数而被立即拒绝。
+    """
+    cfg = config or DEFAULT_CONFIG
+    best_expr = expression
+    best_ll = _eval_likelihood(best_expr, tree_data)
+    if best_ll == -np.inf:
+        return best_expr, best_ll
+    for _ in range(n_steps):
+        result = _propose_local_parameter_move(best_expr, cfg)
+        if result is None:
+            break
+        candidate, _ = result
+        ll_c = _eval_likelihood(candidate, tree_data)
+        if ll_c > best_ll:
+            best_expr = candidate
+            best_ll = ll_c
+    return best_expr, best_ll
+
+
 def generate_new_expression(expression, tree_data, config=None, log_L_cached=None):
     """对表达式执行一步 MH 提议。
+
+    结构提议后会做若干步贪心参数调优 (hill-climb), 让复杂模型
+    有机会在被 MH 判决前找到更好的参数。这是单向提议 (从先验
+    采样 → 调优), MH 比率中的 proposal 修正通过 size_correction
+    近似处理。
 
     Args:
         expression: 当前表达式 E
@@ -147,6 +175,7 @@ def generate_new_expression(expression, tree_data, config=None, log_L_cached=Non
     cfg = config or DEFAULT_CONFIG
     local_move_prob = float(cfg.get("local_move_prob", 0.5))
     local_move_prob = min(max(local_move_prob, 0.0), 1.0)
+    struct_tune_steps = int(cfg.get("struct_tune_steps", 8))
 
     all_nodes = expression.get_all_nodes()
     n_nodes = len(all_nodes)
@@ -170,6 +199,10 @@ def generate_new_expression(expression, tree_data, config=None, log_L_cached=Non
                           bamm_depth=bamm_d,
                           pwbd_depth=pwbd_d)
         new_expr = fill_hole(severed, path, sub_expr)
+        if struct_tune_steps > 0:
+            new_expr, _ = _hill_climb_params(
+                new_expr, tree_data, cfg, struct_tune_steps
+            )
 
     log_L = log_L_cached if log_L_cached is not None else _eval_likelihood(expression, tree_data)
     log_L_prime = _eval_likelihood(new_expr, tree_data)

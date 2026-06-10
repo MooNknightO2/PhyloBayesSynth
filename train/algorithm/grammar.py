@@ -54,7 +54,8 @@ DEFAULT_CONFIG = {
     },
     "max_bamm_nesting": 3,
     "max_pwbd_nesting": 3,
-    "local_move_prob": 0.5,
+    "local_move_prob": 0.7,
+    "struct_tune_steps": 8,
     "local_proposal_scales": {
         "lambda": 0.05,
         "mu": 0.03,
