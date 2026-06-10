@@ -4,11 +4,14 @@
   N1 := (NoisyPhylo N2 N3)
   N2 := (Noise P)
   N3 := (CRB P) | (CRBD P P) | (TDB P P) | (TDBD P P P)
-      | (PCBD P P P P P) | (BAMM P N3 N3)
+      | (PWBD P N3 N3) | (BAMM P N3 N3)
 
-PCBD 是分段常数出生-死亡模型 (Piecewise-Constant Birth-Death),
-参数为 (lambda1, mu1, lambda2, mu2, tau_frac), 其中 tau_frac ∈ (0,1)
-表示断点在树高中的比例位置。
+PWBD (Piecewise Birth-Death) 是嵌套分段模型。参数 tau_frac ∈ (0,1)
+表示断点在当前区间中的相对位置，两个子表达式分别描述近现世端与
+近根端的模型。嵌套 PWBD 可组合出任意多段、每段不同模型类型的
+分段 BD 过程（如第一段 CRBD、第二段 TDBD、第三段 CRB）。
+
+BAMM 保留但默认先验概率为 0，用户需要时可手动开启。
 """
 
 import numpy as np
@@ -26,22 +29,20 @@ GRAMMAR = {
         ("CRBD", ["lambda", "mu"],         []),
         ("TDB",  ["lambda", "z"],          []),
         ("TDBD", ["lambda", "z", "epsilon"], []),
-        ("PCBD", ["lambda", "mu", "lambda", "mu", "tau_frac"], []),
+        ("PWBD", ["tau_frac"],             ["N3", "N3"]),
         ("BAMM", ["eta"],                  ["N3", "N3"]),
     ],
 }
 
 DEFAULT_CONFIG = {
-    # N3 各产生式的选择概率
     "N3_probs": {
         "CRB":  0.20,
-        "CRBD": 0.20,
-        "TDB":  0.15,
+        "CRBD": 0.25,
+        "TDB":  0.10,
         "TDBD": 0.15,
-        "PCBD": 0.20,
-        "BAMM": 0.10,
+        "PWBD": 0.30,
+        "BAMM": 0.00,
     },
-    # 各参数的先验分布: (分布名, 参数字典)
     "param_priors": {
         "lambda":    ("exponential", {"scale": 0.15}),
         "mu":        ("exponential", {"scale": 0.08}),
@@ -51,11 +52,9 @@ DEFAULT_CONFIG = {
         "sigma":     ("exponential", {"scale": 0.08}),
         "tau_frac":  ("beta",        {"a": 2, "b": 2}),
     },
-    # BAMM 递归展开的最大嵌套层数
     "max_bamm_nesting": 3,
-    # MH 提议: 局部参数随机游走 vs 结构剪枝重采样
+    "max_pwbd_nesting": 3,
     "local_move_prob": 0.5,
-    # 各参数的局部提议步长 (Gaussian random walk std)
     "local_proposal_scales": {
         "lambda": 0.05,
         "mu": 0.03,

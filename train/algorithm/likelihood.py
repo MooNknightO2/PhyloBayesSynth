@@ -120,137 +120,112 @@ def _crbd_branch_factor_val(lam, mu, tau_c, tau_p):
 
 
 # ===================================================================
-# 通用 Riccati 解 (任意初始条件 E₀)
+# 通用 Λ-参数化 Riccati 解 (任意初始条件 E₀, 任意 μ/λ=ε 模型)
 # ===================================================================
 #
-# dE/dτ = λ(E-1)(E-ε),  E(τ₀)=E₀,  ε=μ/λ
-# 定义 V(s) = (E₀-ε) - (E₀-1)·exp(r·s),  s = τ-τ₀
-# 则 E(s) = W(s)/V(s),  W(s) = (E₀-ε) - ε(E₀-1)·exp(r·s)
-# D 传播: log D(s₁)/D(s₀) = r(s₁-s₀) + 2 log|V(s₀)| - 2 log|V(s₁)|
+# 对于 μ/λ = ε 恒定的任意出生-死亡过程 (涵盖 CRB/CRBD/TDB/TDBD),
+# Riccati 方程 dE/dτ = λ(τ)(E−1)(E−ε) 可用 Λ = ∫λ(s)ds 参数化:
+#   V(Λ) = (E₀−ε) − (E₀−1)·exp((1−ε)Λ)
+#   E    = W/V,   W = (E₀−ε) − ε(E₀−1)·exp((1−ε)Λ)
+#   1−E  = (1−ε)(1−E₀)·exp((1−ε)Λ) / V
+#   log D(Λ_p)/D(Λ_c) = (1−ε)(Λ_p−Λ_c) + 2 log|V(Λ_c)| − 2 log|V(Λ_p)|
 
 
-def _log_abs_V(E0, eps, r, s):
-    """Compute log|V(s)| stably where V(s) = (E0-eps) - (E0-1)*exp(r*s)."""
-    rs = r * s
-    if rs > _EXP_UPPER:
+def _log_abs_V_Lambda(E0, eps, Lam):
+    """log|V(Λ)| where V = (E0-eps) - (E0-1)*exp((1-eps)*Lam)."""
+    phi = (1.0 - eps) * Lam
+    if phi > _EXP_UPPER:
         one_m_E0 = 1.0 - E0
         if one_m_E0 <= 0:
             return -np.inf
-        return log(one_m_E0) + rs
-    if rs < _EXP_LOWER:
+        return log(one_m_E0) + phi
+    if phi < _EXP_LOWER:
         val = E0 - eps
         return log(max(abs(val), _EPS))
-    V = (E0 - eps) - (E0 - 1.0) * exp(rs)
+    V = (E0 - eps) - (E0 - 1.0) * exp(phi)
     if abs(V) < _EPS:
         return log(_EPS)
     return log(abs(V))
 
 
-def _general_riccati_E_val(lam, mu, E0, s):
-    """通用 Riccati E(s): 常数 (λ,μ), 初始条件 E(0)=E₀."""
-    if s < _EPS:
+def _E_from_Lambda(Lam, eps, E0):
+    """E given cumulative Λ, ε = μ/λ, and initial E₀."""
+    if Lam < _EPS:
         return E0
-    if mu < _EPS:
+    if eps < _EPS:
         if E0 < _EPS:
             return 0.0
-        ls = lam * s
-        if ls > _EXP_UPPER:
-            return 1.0
-        denom = E0 - (E0 - 1.0) * exp(ls)
-        if abs(denom) < _EPS:
-            return 1.0
-        return E0 / denom
-    r = lam - mu
-    eps = mu / lam
-    if abs(r) < _EPS:
+        phi = Lam
+        if phi > _EXP_UPPER:
+            return 0.0
+        V = E0 - (E0 - 1.0) * exp(phi)
+        return E0 / V if abs(V) > _EPS else 0.0
+    if abs(1.0 - eps) < _EPS:
         one_m_E0 = 1.0 - E0
         if one_m_E0 < _EPS:
             return 1.0
-        return 1.0 - one_m_E0 / (1.0 + one_m_E0 * lam * s)
-    rs = r * s
-    if rs > _EXP_UPPER:
+        return 1.0 - one_m_E0 / (1.0 + one_m_E0 * Lam)
+    phi = (1.0 - eps) * Lam
+    if phi > _EXP_UPPER:
         return eps if E0 < 1.0 else 1.0
-    if rs < _EXP_LOWER:
-        val = E0 - eps
-        if abs(val) < _EPS:
-            return E0
+    if phi < _EXP_LOWER:
         return 1.0 if E0 > eps else E0
-    ers = exp(rs)
-    V = (E0 - eps) - (E0 - 1.0) * ers
-    W = (E0 - eps) - eps * (E0 - 1.0) * ers
-    if abs(V) < _EPS:
-        return 1.0
-    return W / V
+    ephi = exp(phi)
+    V = (E0 - eps) - (E0 - 1.0) * ephi
+    W = (E0 - eps) - eps * (E0 - 1.0) * ephi
+    return W / V if abs(V) > _EPS else 1.0
 
 
-def _general_log_one_minus_E(lam, mu, E0, s):
-    """log(1-E(s)) for general Riccati.
-
-    1-E = (1-ε)(1-E₀)·exp(r·s) / V(s).
-    """
-    if s < _EPS:
-        if E0 >= 1.0:
-            return -np.inf
-        return log(1.0 - E0)
-    if mu < _EPS:
-        if E0 < _EPS:
-            return 0.0
-        ls = lam * s
-        if ls > _EXP_UPPER:
-            return -np.inf
-        denom = E0 - (E0 - 1.0) * exp(ls)
-        val = (1.0 - E0) * exp(ls) / denom
-        if val <= 0:
-            return -np.inf
-        return log(val)
-    r = lam - mu
-    eps = mu / lam
-    if abs(r) < _EPS:
-        one_m_E0 = 1.0 - E0
-        if one_m_E0 < _EPS:
-            return -np.inf
-        return log(one_m_E0) - log(1.0 + one_m_E0 * lam * s)
-    one_m_eps = 1.0 - eps
+def _log_one_minus_E_from_Lambda(Lam, eps, E0):
+    """log(1-E) = log(1-ε) + log(1-E₀) + (1-ε)Λ - log|V|."""
+    if Lam < _EPS:
+        return log(max(1.0 - E0, _EPS)) if E0 < 1.0 else -np.inf
     one_m_E0 = 1.0 - E0
-    if one_m_E0 < _EPS or one_m_eps < _EPS:
+    if one_m_E0 < _EPS:
         return -np.inf
-    rs = r * s
-    log_V = _log_abs_V(E0, eps, r, s)
+    if eps < _EPS:
+        phi = Lam
+        if phi > _EXP_UPPER:
+            return 0.0
+        V = E0 - (E0 - 1.0) * exp(phi)
+        val = one_m_E0 * exp(phi) / V
+        return log(val) if val > 0 else -np.inf
+    one_m_eps = 1.0 - eps
+    if one_m_eps < _EPS:
+        return log(one_m_E0) - log(1.0 + one_m_E0 * Lam)
+    phi = one_m_eps * Lam
+    log_V = _log_abs_V_Lambda(E0, eps, Lam)
     if not np.isfinite(log_V):
         return -np.inf
-    return log(one_m_eps) + log(one_m_E0) + rs - log_V
+    return log(one_m_eps) + log(one_m_E0) + phi - log_V
 
 
-def _general_log_branch_factor(lam, mu, E0, s_c, s_p):
-    """log D(s_p)/D(s_c) for constant (λ,μ) interval with E(0)=E₀.
+def _log_branch_factor_Lambda(Lam_c, Lam_p, eps, E0):
+    """log D(τ_p)/D(τ_c) via Λ-parameterization.
 
-    s_c, s_p are measured from the interval start (τ₀).
+    = (1-ε)(Λ_p - Λ_c) + 2 log|V(Λ_c)| - 2 log|V(Λ_p)|
 
-    Formula: r(s_p-s_c) + 2 log|V(s_c)| - 2 log|V(s_p)|
+    Λ_c, Λ_p are cumulative from the interval start where E(0)=E₀.
     """
-    if s_p <= s_c + _EPS:
+    delta = Lam_p - Lam_c
+    if delta < _EPS:
         return 0.0
-    if mu < _EPS:
+    if eps < _EPS:
         if E0 < _EPS:
-            return -lam * (s_p - s_c)
-        ls_c = lam * s_c
-        ls_p = lam * s_p
-        V_c = E0 - (E0 - 1.0) * (exp(ls_c) if ls_c < _EXP_UPPER else float("inf"))
-        V_p = E0 - (E0 - 1.0) * (exp(ls_p) if ls_p < _EXP_UPPER else float("inf"))
-        log_Vc = log(max(abs(V_c), _EPS))
-        log_Vp = log(max(abs(V_p), _EPS))
-        return lam * (s_p - s_c) + 2.0 * log_Vc - 2.0 * log_Vp
-    r = lam - mu
-    if abs(r) < _EPS:
+            return -delta
+        log_Vc = _log_abs_V_Lambda(E0, eps, Lam_c)
+        log_Vp = _log_abs_V_Lambda(E0, eps, Lam_p)
+        if not np.isfinite(log_Vc) or not np.isfinite(log_Vp):
+            return -np.inf
+        return delta + 2.0 * log_Vc - 2.0 * log_Vp
+    if abs(1.0 - eps) < _EPS:
         one_m_E0 = max(1.0 - E0, _EPS)
-        return 2.0 * (log(1.0 + one_m_E0 * lam * s_c)
-                       - log(1.0 + one_m_E0 * lam * s_p))
-    eps = mu / lam
-    log_Vc = _log_abs_V(E0, eps, r, s_c)
-    log_Vp = _log_abs_V(E0, eps, r, s_p)
+        return 2.0 * (log(1.0 + one_m_E0 * Lam_c) - log(1.0 + one_m_E0 * Lam_p))
+    log_Vc = _log_abs_V_Lambda(E0, eps, Lam_c)
+    log_Vp = _log_abs_V_Lambda(E0, eps, Lam_p)
     if not np.isfinite(log_Vc) or not np.isfinite(log_Vp):
         return -np.inf
-    return r * (s_p - s_c) + 2.0 * log_Vc - 2.0 * log_Vp
+    return (1.0 - eps) * delta + 2.0 * log_Vc - 2.0 * log_Vp
 
 
 # --- TDBD 闭式 (推广 CRBD: λ(τ)=λ₀exp(z(T-τ)), μ=ε·λ) ---
@@ -404,23 +379,6 @@ def _prepare_single_regime(tag, params):
         info = {"type": "tdbd", "lam0": lam0, "z": z, "epsilon": epsilon}
         return lam_fn, mu_fn, info
 
-    if tag == "PCBD":
-        lam1, mu1, lam2, mu2, tau_frac = params
-        if lam1 <= 0 or lam2 <= 0 or mu1 < 0 or mu2 < 0:
-            return None
-        if tau_frac <= 0 or tau_frac >= 1.0:
-            return None
-
-        def lam_fn(tau, T):
-            return lam1 if tau <= tau_frac * T else lam2
-
-        def mu_fn(tau, T):
-            return mu1 if tau <= tau_frac * T else mu2
-
-        info = {"type": "pcbd", "lam1": lam1, "mu1": mu1,
-                "lam2": lam2, "mu2": mu2, "tau_frac": tau_frac}
-        return lam_fn, mu_fn, info
-
     return None
 
 
@@ -429,6 +387,34 @@ def _build_rate_system(model_expr, T, bamm_depth=0, max_bamm_nesting=_MAX_BAMM_N
     - n_states, rate_fn, Q, root_state, labels, state_info, _T
     """
     tag = model_expr.tag
+
+    if tag == "PWBD":
+        intervals = _flatten_pwbd(model_expr, 0.0, T)
+        for _, _, leaf in intervals:
+            if leaf.tag not in _LEAF_TAGS or not _leaf_valid(leaf):
+                return None
+
+        def rate_fn(tau):
+            for tau_lo, tau_hi, leaf in intervals:
+                if tau <= tau_hi + _EPS:
+                    lam = _leaf_lambda_at(leaf, tau, T)
+                    eps = _leaf_epsilon(leaf)
+                    return np.array([lam]), np.array([eps * lam])
+            leaf = intervals[-1][2]
+            lam = _leaf_lambda_at(leaf, tau, T)
+            eps = _leaf_epsilon(leaf)
+            return np.array([lam]), np.array([eps * lam])
+
+        return {
+            "n_states": 1,
+            "rate_fn": rate_fn,
+            "Q": np.zeros((1, 1), dtype=float),
+            "root_state": 0,
+            "labels": [()],
+            "state_info": [{"type": "pwbd"}],
+            "_T": T,
+        }
+
     if tag != "BAMM":
         prepared = _prepare_single_regime(tag, model_expr.params)
         if prepared is None:
@@ -906,73 +892,182 @@ def log_likelihood_tdbd(lam0, z, epsilon, tree_data):
     return log_L
 
 
-def log_likelihood_pcbd(lam1, mu1, lam2, mu2, tau_frac, tree_data):
-    """PCBD (分段常数 BD) 闭式似然。
+# ===================================================================
+# PWBD (Piecewise BD) 似然: 将嵌套 PWBD 展平为有序区间后链式求解
+# ===================================================================
 
-    将时间 [0, T] 分为两个区间:
-      区间 1: [0, τ_b]  速率 (λ₁, μ₁)  — 近现世
-      区间 2: [τ_b, T]  速率 (λ₂, μ₂)  — 近根部
-    其中 τ_b = tau_frac · T。
+_LEAF_TAGS = frozenset({"CRB", "CRBD", "TDB", "TDBD"})
 
-    利用通用 Riccati 解 (含非零初始条件) 对灭绝概率 E 与 D 传播
-    在两个 CRBD 子区间上分别求解析解, 在断点处衔接。
+
+def _leaf_lambda_at(leaf, tau, T):
+    """叶模型在 τ 处的 λ(τ)."""
+    tag = leaf.tag
+    if tag in ("CRB", "CRBD"):
+        return leaf.params[0]
+    if tag in ("TDB", "TDBD"):
+        return _lambda_at(leaf.params[0], leaf.params[1], T, tau)
+    return 0.0
+
+
+def _leaf_Lambda(leaf, tau_a, tau_b, T):
+    """叶模型在 [τ_a, τ_b] 上的 Λ = ∫λ(s)ds."""
+    tag = leaf.tag
+    if tag in ("CRB", "CRBD"):
+        return leaf.params[0] * (tau_b - tau_a)
+    if tag in ("TDB", "TDBD"):
+        return _lambda_integral(leaf.params[0], leaf.params[1], T, tau_a, tau_b)
+    return 0.0
+
+
+def _leaf_epsilon(leaf):
+    """叶模型的 ε = μ/λ."""
+    tag = leaf.tag
+    if tag == "CRB" or tag == "TDB":
+        return 0.0
+    if tag == "CRBD":
+        lam, mu = leaf.params
+        return mu / lam if lam > _EPS else 0.0
+    if tag == "TDBD":
+        return leaf.params[2]
+    return 0.0
+
+
+def _leaf_valid(leaf):
+    tag = leaf.tag
+    if tag == "CRB":
+        return leaf.params[0] > 0
+    if tag == "CRBD":
+        return leaf.params[0] > 0 and leaf.params[1] >= 0
+    if tag == "TDB":
+        return leaf.params[0] > 0
+    if tag == "TDBD":
+        return leaf.params[0] > 0 and 0 <= leaf.params[2] < 1.0
+    return False
+
+
+def _flatten_pwbd(expr, tau_lo, tau_hi):
+    """将 PWBD 表达式展平为 [(tau_lo, tau_hi, leaf_model), ...] 列表.
+
+    tau_frac 相对于当前区间 [tau_lo, tau_hi], 所以嵌套 PWBD
+    的断点始终落在父区间内部。
+    """
+    if expr.tag != "PWBD":
+        return [(tau_lo, tau_hi, expr)]
+    tau_frac = expr.params[0]
+    if tau_frac <= 0 or tau_frac >= 1.0:
+        return [(tau_lo, tau_hi, expr.children[0])]
+    tau_mid = tau_lo + tau_frac * (tau_hi - tau_lo)
+    return (_flatten_pwbd(expr.children[0], tau_lo, tau_mid)
+            + _flatten_pwbd(expr.children[1], tau_mid, tau_hi))
+
+
+def log_likelihood_pwbd(model_expr, tree_data):
+    """PWBD 嵌套分段 BD 闭式似然.
+
+    算法:
+    1. 展平 PWBD 得到有序区间列表 [(τ_lo, τ_hi, leaf), ...]
+    2. 正向扫描 E: 从 τ=0 到 T, 在每个区间使用 Λ-参数化 Riccati
+    3. 对每条枝, 在断点处拆分并逐段计算 D factor
+    4. 在每个分枝时刻取对应区间的 λ(τ_k)
+    5. 根存活条件化
     """
     n = tree_data["n"]
     T = tree_data["tree_height"]
     branches = tree_data["branches"]
     branching_times = tree_data["branching_times"]
-    if (lam1 <= 0 or lam2 <= 0 or mu1 < 0 or mu2 < 0
-            or tau_frac <= 0 or tau_frac >= 1.0 or T < _EPS):
-        return -np.inf
-    tau_b = tau_frac * T
-
-    E_b = _crbd_E_val(lam1, mu1, tau_b)
-    if not np.isfinite(E_b):
+    if T < _EPS:
         return -np.inf
 
+    intervals = _flatten_pwbd(model_expr, 0.0, T)
+    K = len(intervals)
+    for tau_lo, tau_hi, leaf in intervals:
+        if leaf.tag not in _LEAF_TAGS or not _leaf_valid(leaf):
+            return -np.inf
+
+    # --- 正向扫描 E, 记录每个区间起点的 E₀ ---
+    E_start = [0.0] * K  # E at the start of each interval
+    E_start[0] = 0.0
+    for k in range(K):
+        tau_lo, tau_hi, leaf = intervals[k]
+        eps_k = _leaf_epsilon(leaf)
+        Lam_full = _leaf_Lambda(leaf, tau_lo, tau_hi, T)
+        E_end = _E_from_Lambda(Lam_full, eps_k, E_start[k])
+        if not np.isfinite(E_end):
+            return -np.inf
+        if k + 1 < K:
+            E_start[k + 1] = E_end
+    E_root = E_end  # noqa: F821
+
+    # --- 断点数组 (用于快速查找) ---
+    breakpoints = [intervals[k][0] for k in range(K)] + [T]
+
+    def _find_interval(tau):
+        for k in range(K):
+            if tau <= breakpoints[k + 1] + _EPS:
+                return k
+        return K - 1
+
+    # --- 分枝时刻贡献: Σ log λ(τ_k) ---
     log_L = lgamma(n)
     for tau_k in branching_times:
-        lam_k = lam1 if tau_k <= tau_b else lam2
-        if lam_k <= 0:
+        k = _find_interval(tau_k)
+        lam_k = _leaf_lambda_at(intervals[k][2], tau_k, T)
+        if lam_k <= 0 or not np.isfinite(lam_k):
             return -np.inf
         log_L += log(lam_k)
 
+    # --- 枝传播贡献: Σ log D(τ_p)/D(τ_c) ---
     for _, tau_c, tau_p in branches:
-        lbf = _pcbd_log_branch_factor(
-            lam1, mu1, lam2, mu2, tau_b, E_b, tau_c, tau_p
-        )
+        lbf = _pwbd_log_branch_factor(intervals, E_start, tau_c, tau_p, T)
         if not np.isfinite(lbf):
             return -np.inf
         log_L += lbf
 
-    s_root = T - tau_b
-    log_surv = _general_log_one_minus_E(lam2, mu2, E_b, s_root)
+    # --- 根存活条件化 ---
+    k_last = K - 1
+    tau_lo_last, tau_hi_last, leaf_last = intervals[k_last]
+    eps_last = _leaf_epsilon(leaf_last)
+    Lam_last = _leaf_Lambda(leaf_last, tau_lo_last, T, T)
+    log_surv = _log_one_minus_E_from_Lambda(Lam_last, eps_last, E_start[k_last])
     if not np.isfinite(log_surv):
         return -np.inf
     log_L -= 2.0 * log_surv
     return log_L
 
 
-def _pcbd_log_branch_factor(lam1, mu1, lam2, mu2, tau_b, E_b,
-                             tau_c, tau_p):
-    """计算 PCBD 模型中一条枝的 log D(τ_p)/D(τ_c)。
-
-    根据枝与断点 τ_b 的关系拆分为至多两段, 每段使用对应区间
-    的通用闭式 branch factor。
-    """
+def _pwbd_log_branch_factor(intervals, E_start, tau_c, tau_p, T):
+    """一条枝 [τ_c, τ_p] 的 log D factor, 在断点处拆分."""
     if tau_p <= tau_c + _EPS:
         return 0.0
-    if tau_p <= tau_b + _EPS:
-        return _crbd_log_branch_factor(lam1, mu1, tau_c, tau_p)
-    if tau_c >= tau_b - _EPS:
-        s_c = tau_c - tau_b
-        s_p = tau_p - tau_b
-        return _general_log_branch_factor(lam2, mu2, E_b, s_c, s_p)
-    part1 = _crbd_log_branch_factor(lam1, mu1, tau_c, tau_b)
-    part2 = _general_log_branch_factor(lam2, mu2, E_b, 0.0, tau_p - tau_b)
-    if not np.isfinite(part1) or not np.isfinite(part2):
-        return -np.inf
-    return part1 + part2
+    K = len(intervals)
+    breakpoints = [intervals[k][0] for k in range(K)] + [T]
+
+    k_start = 0
+    for k in range(K):
+        if tau_c <= breakpoints[k + 1] + _EPS:
+            k_start = k
+            break
+
+    log_bf = 0.0
+    cur_tau = tau_c
+    for k in range(k_start, K):
+        tau_lo, tau_hi, leaf = intervals[k]
+        seg_end = min(tau_p, tau_hi)
+        if cur_tau >= seg_end - _EPS:
+            if seg_end >= tau_p - _EPS:
+                break
+            continue
+        eps_k = _leaf_epsilon(leaf)
+        Lam_c = _leaf_Lambda(leaf, tau_lo, cur_tau, T)
+        Lam_p = _leaf_Lambda(leaf, tau_lo, seg_end, T)
+        part = _log_branch_factor_Lambda(Lam_c, Lam_p, eps_k, E_start[k])
+        if not np.isfinite(part):
+            return -np.inf
+        log_bf += part
+        cur_tau = seg_end
+        if cur_tau >= tau_p - _EPS:
+            break
+    return log_bf
 
 
 def _model_struct_equal(a, b):
@@ -1001,9 +1096,8 @@ def _base_model_log_likelihood(model_expr, tree_data):
         return log_likelihood_tdb(model_expr.params[0], model_expr.params[1], tree_data)
     if tag == "TDBD":
         return log_likelihood_tdbd(model_expr.params[0], model_expr.params[1], model_expr.params[2], tree_data)
-    if tag == "PCBD":
-        p = model_expr.params
-        return log_likelihood_pcbd(p[0], p[1], p[2], p[3], p[4], tree_data)
+    if tag == "PWBD":
+        return log_likelihood_pwbd(model_expr, tree_data)
     if tag == "BAMM":
         return log_likelihood_bamm(model_expr, tree_data)
     return -np.inf
@@ -1085,9 +1179,8 @@ def evaluate_likelihood(expression, tree_data):
         log_L = log_likelihood_tdbd(
             model_expr.params[0], model_expr.params[1], model_expr.params[2], tree_data
         )
-    elif tag == "PCBD":
-        p = model_expr.params
-        log_L = log_likelihood_pcbd(p[0], p[1], p[2], p[3], p[4], tree_data)
+    elif tag == "PWBD":
+        log_L = log_likelihood_pwbd(model_expr, tree_data)
     elif tag == "BAMM":
         log_L = log_likelihood_bamm(model_expr, tree_data)
     else:

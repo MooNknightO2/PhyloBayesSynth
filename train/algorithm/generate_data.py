@@ -130,22 +130,19 @@ def _build_sim_system(expr: Expression, _depth: int = 0,
             is_constant=abs(z) < 1e-12,
         )
 
-    if tag == "PCBD":
-        lam1, mu1, lam2, mu2, tau_frac = expr.params
-        if lam1 <= 0:
-            raise ValueError(f"PCBD: lambda1 must be > 0, got {lam1}")
-        if lam2 <= 0:
-            raise ValueError(f"PCBD: lambda2 must be > 0, got {lam2}")
-        if mu1 < 0:
-            raise ValueError(f"PCBD: mu1 must be >= 0, got {mu1}")
-        if mu2 < 0:
-            raise ValueError(f"PCBD: mu2 must be >= 0, got {mu2}")
+    if tag == "PWBD":
+        tau_frac = expr.params[0]
         if not (0 < tau_frac < 1):
-            raise ValueError(f"PCBD: tau_frac must be in (0,1), got {tau_frac}")
+            raise ValueError(f"PWBD: tau_frac must be in (0,1), got {tau_frac}")
+        if len(expr.children) != 2:
+            raise ValueError("PWBD must have exactly 2 children")
         t_break = max_time * (1.0 - tau_frac)
+        recent_sys = _build_sim_system(expr.children[0], _depth, max_time)
+        ancient_sys = _build_sim_system(expr.children[1], _depth, max_time)
 
-        def _rf(t, l1=lam1, m1=mu1, l2=lam2, m2=mu2, tb=t_break):
-            return (l1, m1) if t >= tb else (l2, m2)
+        def _rf(t, rs=recent_sys, asys=ancient_sys, tb=t_break):
+            sys = rs if t >= tb else asys
+            return sys.rate_fns[0](t)
 
         return _SimSystem(
             n_states=1,

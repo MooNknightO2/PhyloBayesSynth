@@ -45,15 +45,18 @@ def fill_hole(severed_expr, path, sub_expr):
         return sub_expr
     return severed_expr.set_node_at(path, sub_expr)
 
-def _bamm_depth_at(expression, path):
-    """统计从根到 path 位置途经的 BAMM 节点数。"""
-    depth = 0
+def _nesting_depths_at(expression, path):
+    """统计从根到 path 位置途经的 BAMM/PWBD 节点数。"""
+    bamm_d = 0
+    pwbd_d = 0
     node = expression
     for idx in path:
         if node.tag == "BAMM":
-            depth += 1
+            bamm_d += 1
+        elif node.tag == "PWBD":
+            pwbd_d += 1
         node = node.children[idx]
-    return depth
+    return bamm_d, pwbd_d
 
 
 _TAG_PARAM_NAMES = {
@@ -62,7 +65,7 @@ _TAG_PARAM_NAMES = {
     "CRBD": ["lambda", "mu"],
     "TDB": ["lambda", "z"],
     "TDBD": ["lambda", "z", "epsilon"],
-    "PCBD": ["lambda", "mu", "lambda", "mu", "tau_frac"],
+    "PWBD": ["tau_frac"],
     "BAMM": ["eta"],
 }
 
@@ -161,8 +164,11 @@ def generate_new_expression(expression, tree_data, config=None, log_L_cached=Non
         idx = np.random.randint(n_nodes)
         path, _ = all_nodes[idx]
         nonterminal, severed = sever(expression, path)
-        depth = _bamm_depth_at(expression, path)
-        sub_expr = expand(nonterminal, config, depth=depth, bamm_depth=depth)
+        bamm_d, pwbd_d = _nesting_depths_at(expression, path)
+        sub_expr = expand(nonterminal, config,
+                          depth=bamm_d + pwbd_d,
+                          bamm_depth=bamm_d,
+                          pwbd_depth=pwbd_d)
         new_expr = fill_hole(severed, path, sub_expr)
 
     log_L = log_L_cached if log_L_cached is not None else _eval_likelihood(expression, tree_data)

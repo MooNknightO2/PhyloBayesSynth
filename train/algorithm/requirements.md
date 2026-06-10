@@ -7,10 +7,13 @@
        |(CRBD P P)
        |(TDB P P)
        |(TDBD P P P)
-       |(PCBD P P P P P)
+       |(PWBD P N3 N3)
        |(BAMM P N3 N3)
-   其中N1到N3是非终结符，CRB, CRBD, TDB, TDBD, PCBD, BAMM是标识，分别指的是CRB恒定出生率，CRBD恒定出生死亡率，TDB由时间决定的出生率，TDBD由时间决定的出生死亡率，PCBD分段常数出生死亡率（含一个断点），BAMM是change-point，切换根据一个泊松过程发生。P指的是待填的参数。
-   PCBD的五个参数为 (λ₁, μ₁, λ₂, μ₂, τ_frac)，其中τ_frac∈(0,1)表示断点在树高中的比例位置。区间1 [0, τ_b] 使用 (λ₁, μ₁)，区间2 [τ_b, T] 使用 (λ₂, μ₂)。PCBD的似然使用含非零初始条件的Riccati闭式解，参考Stadler (2011)分段常数BD模型。
+   其中N1到N3是非终结符，CRB, CRBD, TDB, TDBD, PWBD, BAMM是标识，分别指的是CRB恒定出生率，CRBD恒定出生死亡率，TDB由时间决定的出生率，TDBD由时间决定的出生死亡率，PWBD嵌套分段出生死亡率，BAMM是change-point（切换根据泊松过程发生，默认先验概率为0）。P指的是待填的参数。
+   PWBD (Piecewise Birth-Death) 有一个参数 τ_frac∈(0,1) 表示断点在当前区间中的相对位置，以及两个子表达式 N3 分别描述近现世端与近根端的模型。嵌套 PWBD 可组合出任意多段、每段不同模型类型的分段BD过程。例如:
+     (PWBD 0.5 (CRBD 0.3 0.1) (TDBD 0.5 0.2 0.1))  — 两段，前半CRBD后半TDBD
+     (PWBD 0.4 (CRB 0.5) (PWBD 0.6 (CRBD 0.3 0.1) (TDB 0.8 -0.1)))  — 三段
+   PWBD的似然使用通用Λ-参数化Riccati闭式解，对每段使用Λ=∫λ(s)ds、ε=μ/λ参数化，在断点处链式衔接E与D的初始条件，全程闭式O(n·K)计算。参考Stadler (2011)、Louca et al. (2022)分段BD模型理论。
 2. 从先验中采样的函数Generate_Expression_From_Prior
    Expand $[(t_{ik}, \theta_1 \ldots \theta_{h_{ik}}, E_1 \ldots E_{n_{ik}})](N_i) := p_{ik} \prod_{j=1}^{n_{ik}} \gamma_{ik}(\theta_1, \ldots, \theta_{h_{ik}}) \prod_{j=1}^{n_{ik}} \text{Expand}[E_j](\tilde{N}_{ik}^j)$
    其中$t_{ik}$是某个标识，如TDB，CRB等，$\theta_1 \ldots \theta_{h_{ik}}$是该标识对应的参数，$E_1 \ldots E_{n_{ik}}$是该标识对应的表达式，$p_{ik}$是选择的概率，$\gamma_{ik}$是选择的参数的联合分布，$\tilde{N}_{ik}^j$是该标识对应的第j个非终结符。
