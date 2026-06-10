@@ -32,7 +32,7 @@ int main() {
     const unsigned numTaxaBlocks = nexusReader.GetNumTaxaBlocks();
 
     if (numTaxaBlocks > 1) {
-        std::cerr << "Warning: Nexus2PyJSON can only handle one taxa block, ignoring remaining blocks" << std::endl;
+        std::cerr << "Warning: Nexus2PhyloJSON can only handle one taxa block, ignoring remaining blocks" << std::endl;
     }
 
     if (numTaxaBlocks > 0) {

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>bamm_identifiability_analysis.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="bamm-%E5%8F%AF%E8%BE%A8%E8%AF%86%E6%80%A7%E5%88%86%E6%9E%90%E4%B8%BA%E4%BB%80%E4%B9%88%E7%9C%9F%E5%AE%9E-bamm-%E5%8F%82%E6%95%B0%E7%9A%84%E4%BC%BC%E7%84%B6%E4%B8%8D%E6%98%AF%E6%9C%80%E9%AB%98%E7%9A%84">BAMM 可辨识性分析：为什么真实 BAMM 参数的似然不是最高的？</h1>
+<h2 id="1-%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C">1 实验结果</h2>
+<p>真实模型：<code>(BAMM 0.15 (CRBD 0.4 0.05) (CRBD 1.0 0.65))</code></p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>参数</th>
+<th>累积 log-L</th>
+<th>Δ vs BAMM_true</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>BAMM 真实参数</strong></td>
+<td>η=0.15, bg=(0.4, 0.05), fg=(1.0, 0.65)</td>
+<td>2877.70</td>
+<td>0</td>
+</tr>
+<tr>
+<td>CRB 全局 MLE</td>
+<td>λ=0.5212</td>
+<td>2776.25</td>
+<td>−101.45</td>
+</tr>
+<tr>
+<td>CRBD 全局 MLE</td>
+<td>λ=0.9554, μ=0.7283</td>
+<td>2889.03</td>
+<td><strong>+11.33</strong></td>
+</tr>
+<tr>
+<td>TDBD 全局 MLE</td>
+<td>λ₀=2.1168, z=−0.075, ε=0.8807</td>
+<td>2899.14</td>
+<td><strong>+21.44</strong></td>
+</tr>
+</tbody>
+</table>
+<p>CRBD 和 TDBD 的联合 MLE 都超过了 BAMM 真实参数，TDBD 优势最大。</p>
+<hr>
+<h2 id="2-%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90">2 原因分析</h2>
+<h3 id="21-%E6%AF%94%E8%BE%83%E4%B8%8D%E5%AF%B9%E7%AD%89%E5%9B%BA%E5%AE%9A%E5%8F%82%E6%95%B0-vs-%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1">2.1 比较不对等：固定参数 vs 最大似然估计</h3>
+<p>这是最直接的原因。CRBD/TDBD 经过了在所有树上的联合参数优化（MLE），而 BAMM 使用的是<strong>固定的生成参数 θ_true</strong>，没有做任何调参。</p>
+<p>在统计学中，对任何参数化模型族 ${p_\theta}$ 和任意有限样本 ${O_1, \dots, O_J}$，MLE $\hat\theta$ 满足：</p>
+<p>$$\sum_{j=1}^{J} \log p(O_j \mid \hat\theta) ;\geq; \sum_{j=1}^{J} \log p(O_j \mid \theta_{\text{true}})$$</p>
+<p>等号仅在 $\hat\theta = \theta_{\text{true}}$ 时成立，概率为零。因此即使用 BAMM 自身的参数族做 MLE，结果也会高于 θ_true。CRBD/TDBD 的 MLE 自然也可以超过一个<strong>未优化</strong>的 BAMM。</p>
+<p><strong>结论</strong>：这个 Δ 主要反映了「参数优化 gap」，不能直接用于模型选择。</p>
+<h3 id="22-bamm-%E8%BE%B9%E9%99%85%E5%8C%96%E5%90%8E%E7%9A%84%E6%9C%89%E6%95%88%E9%80%9F%E7%8E%87%E4%B8%8E-tdbd-%E9%AB%98%E5%BA%A6%E7%9B%B8%E4%BC%BC">2.2 BAMM 边际化后的有效速率与 TDBD 高度相似</h3>
+<p>这是更深层的结构性原因。</p>
+<p>BAMM 的切换是<strong>单向</strong>的（bg → fg，不可回切），因此在前向时间 $t$（从根开始计），一条谱系仍在 bg 状态的概率为：</p>
+<p>$$P(\text{bg} \mid t) = e^{-\eta t}, \quad P(\text{fg} \mid t) = 1 - e^{-\eta t}$$</p>
+<p>边际化掉 regime 标签后，有效速率（对应后向时间 $\tau = T - t$）为：</p>
+<p>$$\lambda_{\text{eff}}(\tau) = e^{-\eta(T-\tau)} \cdot \lambda_{\text{bg}} + (1 - e^{-\eta(T-\tau)}) \cdot \lambda_{\text{fg}}$$</p>
+<p>$$\mu_{\text{eff}}(\tau) = e^{-\eta(T-\tau)} \cdot \mu_{\text{bg}} + (1 - e^{-\eta(T-\tau)}) \cdot \mu_{\text{fg}}$$</p>
+<p>代入本实验的参数（η=0.15, T≈8）：</p>
+<table>
+<thead>
+<tr>
+<th>后向时间 τ</th>
+<th>P(bg)</th>
+<th>λ_eff</th>
+<th>μ_eff</th>
+<th>r_eff</th>
+<th>ε_eff</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0（现世）</td>
+<td>0.301</td>
+<td>0.820</td>
+<td>0.470</td>
+<td>0.350</td>
+<td>0.573</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.407</td>
+<td>0.756</td>
+<td>0.401</td>
+<td>0.355</td>
+<td>0.531</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.549</td>
+<td>0.670</td>
+<td>0.310</td>
+<td>0.360</td>
+<td>0.463</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0.741</td>
+<td>0.556</td>
+<td>0.188</td>
+<td>0.368</td>
+<td>0.337</td>
+</tr>
+<tr>
+<td>T≈8（根）</td>
+<td>1.000</td>
+<td>0.400</td>
+<td>0.050</td>
+<td>0.350</td>
+<td>0.125</td>
+</tr>
+</tbody>
+</table>
+<p>可以观察到：</p>
+<ul>
+<li><strong>r_eff 几乎恒定</strong>（≈0.35），这是设计时 r_bg = r_fg 的直接后果。</li>
+<li><strong>λ_eff 和 ε_eff 单调变化</strong>：从根到现世，λ_eff 从 0.4 增长到 0.82，ε_eff 从 0.125 增长到 0.573。</li>
+</ul>
+<p>这正是 TDBD 模型的参数形式：$\lambda(\tau) = \lambda_0 \cdot e^{z(T-\tau)}$，$\mu(\tau) = \varepsilon \cdot \lambda(\tau)$。指数函数 $e^{-\eta(T-\tau)}$ 可以被 $e^{z(T-\tau)}$ 很好地近似（实际上 $z \approx -\eta$ 时近乎完美）。</p>
+<p>TDBD MLE 找到的参数 (λ₀=2.12, z=−0.075, ε=0.88) 给出的速率曲线：</p>
+<table>
+<thead>
+<tr>
+<th>τ</th>
+<th>λ_TDBD(τ)</th>
+<th>μ_TDBD(τ)</th>
+<th>r_TDBD(τ)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1.163</td>
+<td>1.024</td>
+<td>0.139</td>
+</tr>
+<tr>
+<td>4</td>
+<td>1.570</td>
+<td>1.382</td>
+<td>0.188</td>
+</tr>
+<tr>
+<td>T≈8</td>
+<td>2.117</td>
+<td>1.864</td>
+<td>0.253</td>
+</tr>
+</tbody>
+</table>
+<p>虽然绝对值不同，但 TDBD 的 MLE 自由地调整了 3 个参数来最大化<strong>这些特定树</strong>的似然，它可以通过全局放大 λ 和 ε 来更好地拟合数据中的偶然模式（例如某些树恰好有更多灭绝事件）。</p>
+<h3 id="23-%E6%A8%A1%E5%9E%8B%E5%A4%8D%E6%9D%82%E5%BA%A6%E7%9A%84%E4%BB%A3%E4%BB%B7">2.3 模型复杂度的代价</h3>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>自由参数数</th>
+<th>可调维度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CRB</td>
+<td>1</td>
+<td>λ</td>
+</tr>
+<tr>
+<td>CRBD</td>
+<td>2</td>
+<td>λ, μ</td>
+</tr>
+<tr>
+<td>TDBD</td>
+<td>3</td>
+<td>λ₀, z, ε</td>
+</tr>
+<tr>
+<td>BAMM (单层, 双 CRBD)</td>
+<td>5</td>
+<td>η, λ_bg, μ_bg, λ_fg, μ_fg</td>
+</tr>
+</tbody>
+</table>
+<p>BAMM 有 5 个参数。如果做 BAMM 的联合 MLE（从 θ_true 出发局部优化），由于有更多自由度，其 MLE 似然一定 ≥ TDBD 的 MLE 似然（CRBD 是 BAMM 在 η→0 时的特例，TDBD 虽然不是 BAMM 的子模型，但 BAMM 的表达力更强）。</p>
+<p>然而 BAMM 的联合 MLE 计算极慢（每次似然评估都需要解耦合 ODE），这就是之前删掉精修的原因。在基线对比中，我们用的是<strong>未优化的 θ_true</strong>，因此 BAMM 只使用了 5 维参数空间中的一个固定点，远未发挥其全部拟合能力。</p>
+<hr>
+<h2 id="3-%E6%A8%A1%E5%9E%8B%E9%97%B4%E8%B7%9D%E7%A6%BB%E7%9A%84%E5%AE%9A%E9%87%8F%E5%BA%A6%E9%87%8F">3 模型间距离的定量度量</h2>
+<h3 id="31-%E5%9F%BA%E4%BA%8E%E4%BC%BC%E7%84%B6%E7%9A%84%E8%BF%91%E4%BC%BC-kl-%E6%95%A3%E5%BA%A6">3.1 基于似然的近似 KL 散度</h3>
+<p>KL 散度 $D_{\text{KL}}(p | q)$ 衡量用模型 $q$ 近似真实分布 $p$ 时的信息损失。利用从 BAMM 生成的 $J$ 棵树，可以 Monte Carlo 估计：</p>
+<p>$$D_{\text{KL}}(\text{BAMM}<em>{\text{true}} | q) ;\approx; \frac{1}{J} \sum</em>{j=1}^{J} \bigl[\log p(O_j \mid \theta_{\text{BAMM}}) - \log q(O_j \mid \theta_q)\bigr]$$</p>
+<p><strong>注意</strong>：当 $\theta_q$ 是在<strong>同一批数据</strong>上的 MLE 时，$\log q$ 有乐观偏差（过拟合），会使估计值偏小甚至为负。这不代表 KL 散度真的为负（KL ≥ 0 恒成立），而是有限样本的训练-测试混用导致的。</p>
+<p>设 $J = 20$（从累积似然量级推断），各模型的估计值：</p>
+<table>
+<thead>
+<tr>
+<th>近似目标</th>
+<th>计算</th>
+<th>每树平均 Δ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\hat D_{\text{KL}}(\text{BAMM} | \text{CRB})$</td>
+<td>$(2877.70 - 2776.25) / J$</td>
+<td><strong>+5.07 nats</strong></td>
+</tr>
+<tr>
+<td>$\hat D_{\text{KL}}(\text{BAMM} | \text{CRBD}_{\text{MLE}})$</td>
+<td>$(2877.70 - 2889.03) / J$</td>
+<td>−0.57 nats*</td>
+</tr>
+<tr>
+<td>$\hat D_{\text{KL}}(\text{BAMM} | \text{TDBD}_{\text{MLE}})$</td>
+<td>$(2877.70 - 2899.14) / J$</td>
+<td>−1.07 nats*</td>
+</tr>
+</tbody>
+</table>
+<p>*标注的负值是由 MLE 过拟合偏差造成的，不代表真实 KL 为负。</p>
+<h3 id="32-aic-%E6%A0%A1%E6%AD%A3">3.2 AIC 校正</h3>
+<p>用 AIC = −2·logL + 2·k（k 为自由参数数）做有限样本校正：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>k</th>
+<th>−2·logL</th>
+<th>AIC</th>
+<th>ΔAIC vs BAMM_true</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BAMM_true</td>
+<td>5*</td>
+<td>−5755.40</td>
+<td>−5745.40</td>
+<td>0</td>
+</tr>
+<tr>
+<td>CRBD MLE</td>
+<td>2</td>
+<td>−5778.06</td>
+<td>−5774.06</td>
+<td><strong>−28.66 (CRBD 更优)</strong></td>
+</tr>
+<tr>
+<td>TDBD MLE</td>
+<td>3</td>
+<td>−5798.28</td>
+<td>−5792.28</td>
+<td><strong>−46.88 (TDBD 更优)</strong></td>
+</tr>
+</tbody>
+</table>
+<p>*BAMM 用了固定 θ_true（未优化），严格来说不适用 AIC；如果 BAMM 也做 MLE（k=5），logL 会更高但 penalty 也更大。</p>
+<h3 id="33-%E6%9C%89%E6%95%88%E9%80%9F%E7%8E%87%E7%9A%84-l%C2%B2-%E8%B7%9D%E7%A6%BB">3.3 有效速率的 L² 距离</h3>
+<p>另一个直观度量：比较 BAMM 的边际有效速率 $\lambda_{\text{eff}}(\tau)$ 与 TDBD 的 $\lambda(\tau)$ 在 $[0, T]$ 上的积分距离。</p>
+<p>$$d_{\lambda}^2 = \frac{1}{T}\int_0^T \bigl[\lambda_{\text{eff}}(\tau) - \lambda_{\text{TDBD}}(\tau)\bigr]^2 , d\tau$$</p>
+<p>对于 CRBD MLE（常数 λ=0.955）：BAMM 有效 λ 在 0.40~0.82 之间变化，CRBD 用一个常数 0.955 近似，两者差异较大。</p>
+<p>对于 TDBD MLE：TDBD 的指数函数形式与 BAMM 的指数混合形式高度吻合（均为 $e^{c \cdot \tau}$ 型），L² 距离很小。</p>
+<hr>
+<h2 id="4-%E5%AD%A6%E7%95%8C%E5%85%B3%E4%BA%8E-bamm-%E5%8F%AF%E8%BE%A8%E8%AF%86%E6%80%A7%E7%9A%84%E4%BA%89%E8%AE%BA">4 学界关于 BAMM 可辨识性的争论</h2>
+<p>本实验观察到的「BAMM 与 TDBD 难以区分」现象并非偶然——它根植于出生-死亡模型的数学结构，是系统发育学中一个被广泛讨论的已知问题。</p>
+<h3 id="41-louca--pennell-2020%E5%90%8C%E4%BD%99%E7%B1%BB%E5%AE%9A%E7%90%86">4.1 Louca &amp; Pennell (2020)：同余类定理</h3>
+<p>Louca &amp; Pennell 在 <em>Nature</em> 上证明了一个根本性的不可辨识性结果：</p>
+<blockquote>
+<p>对于任意给定的现存物种时间树和任意候选多样化历史，存在<strong>无穷多个</strong>替代多样化历史与之具有完全相同的似然。</p>
+</blockquote>
+<p>这些似然相同的模型构成一个<strong>同余类（congruence class）</strong>。具体而言，他们证明了仅从现存物种的重构树出发，只有一个复合量——&quot;拉入速率&quot;（pulled diversification rate）——是可辨识的，而 $\lambda(t)$ 和 $\mu(t)$ 各自的绝对值不可辨识。</p>
+<p>这直接解释了本实验的结果：BAMM 的真实参数 $(\lambda_{\text{bg}}, \mu_{\text{bg}}, \lambda_{\text{fg}}, \mu_{\text{fg}}, \eta)$ 边际化后产生的有效速率 $\lambda_{\text{eff}}(\tau)$、$\mu_{\text{eff}}(\tau)$，和 TDBD MLE 的 $\lambda_0 e^{z(T-\tau)}$、$\varepsilon \lambda_0 e^{z(T-\tau)}$ 可能处于同一个同余类中。在这种情况下，即使有无穷数据，也无法区分两者。</p>
+<blockquote>
+<p><strong>参考文献</strong>：Louca, S. &amp; Pennell, M.W. (2020). Extant timetrees are consistent with a myriad of diversification histories. <em>Nature</em>, 580, 502–505.</p>
+</blockquote>
+<h3 id="42-moore-et-al-2016-vs-rabosky-2017bamm-%E7%9A%84%E4%BC%BC%E7%84%B6%E5%87%BD%E6%95%B0%E4%B9%8B%E4%BA%89">4.2 Moore et al. (2016) vs Rabosky (2017)：BAMM 的似然函数之争</h3>
+<p>Moore, Höhna, Cettineo, Davis &amp; Huelsenbeck (2016) 在 <em>PNAS</em> 上对 BAMM 提出了三项批评：</p>
+<ol>
+<li><strong>似然函数不正确</strong>：BAMM 未考虑不可观测的速率变化事件（发生在已灭绝谱系上的 regime shift），导致似然函数是近似的而非精确的。</li>
+<li><strong>后验对先验极度敏感</strong>：速率变化个数的后验分布对 Poisson 过程的先验参数 $\eta$ 高度敏感，即使数据量很大也无法克服。</li>
+<li><strong>速率估计不可靠</strong>：在模拟数据上，BAMM 的参数估计表现较差。</li>
+</ol>
+<p>Rabosky (2017) 在 <em>Systematic Biology</em> 上逐一反驳：</p>
+<ul>
+<li>Moore 等人提出的替代似然函数本身有数学缺陷（概率可超出 [0,1]）；</li>
+<li>先验敏感性在合理的先验设置下并不严重；</li>
+<li>在速率变化确实可被检测到的模拟树上，BAMM 表现良好，而表现不佳的树本身在统计上与恒定速率模型不可区分。</li>
+</ul>
+<p>这场争论的核心启示与本实验高度相关：<strong>当底层数据的信号不足以区分多个模型时，任何推断方法（包括 SMC）都难以可靠地恢复真实模型结构。</strong></p>
+<blockquote>
+<p><strong>参考文献</strong>：</p>
+<p>Moore, B.R. et al. (2016). Critically evaluating the theory and performance of Bayesian analysis of macroevolutionary mixtures. <em>PNAS</em>, 113(34), 9569–9574.</p>
+<p>Rabosky, D.L. (2017). Is BAMM flawed? Theoretical and practical concerns in the analysis of multi-rate diversification models. <em>Systematic Biology</em>, 67(3), 477–498.</p>
+</blockquote>
+<h3 id="43-meyer--wiens-2018%E9%AB%98%E9%98%B6%E5%88%86%E7%B1%BB%E5%8D%95%E5%85%83%E7%9A%84%E9%80%9F%E7%8E%87%E4%BC%B0%E8%AE%A1">4.3 Meyer &amp; Wiens (2018)：高阶分类单元的速率估计</h3>
+<p>Meyer &amp; Wiens (2018) 从另一个角度加深了对 BAMM 可辨识性的质疑。他们发现在高阶分类单元（如科、目级别）的系统发育中，BAMM 给出的速率变化数目和位置在不同的采样密度和先验设置下差异很大，且 BAMM 倾向于将速率异质性归因于个别分支而非整体趋势。</p>
+<p>这为本实验提供了旁证：当多样化速率的变化可以被解读为&quot;沿特定谱系的跳变&quot;（BAMM）或&quot;全局的平滑趋势&quot;（TDBD）时，有限的树形数据通常无法区分两种解读。</p>
+<blockquote>
+<p><strong>参考文献</strong>：Meyer, A.L.S. &amp; Wiens, J.J. (2018). Estimating diversification rates for higher taxa: BAMM can give problematic estimates of rates and rate shifts. <em>Evolution</em>, 72(1), 39–53.</p>
+</blockquote>
+<h3 id="44-morlon-2014%E6%97%B6%E5%8F%98%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%BB%9F%E4%B8%80%E6%A1%86%E6%9E%B6">4.4 Morlon (2014)：时变模型的统一框架</h3>
+<p>Morlon (2014) 在综述中指出，时间依赖的出生-死亡模型（如 TDBD）和 regime-shift 模型（如 BAMM）是描述多样化速率变异的两大范式。从统计角度看，两者可以被视为对同一连续体的不同离散化：</p>
+<ul>
+<li><strong>TDBD</strong>：速率是时间的光滑函数，用参数化曲线（指数、多项式等）描述全局趋势。</li>
+<li><strong>BAMM</strong>：速率是分段常数（或分段参数化），由 Poisson 过程的 change-point 决定跳变位置。</li>
+</ul>
+<p>当真实的生物过程不是严格的&quot;突变式切换&quot;时，两种范式产生的树形分布会高度重叠。</p>
+<blockquote>
+<p><strong>参考文献</strong>：Morlon, H. (2014). Phylogenetic approaches for studying diversification. <em>Ecology Letters</em>, 17(4), 508–525.</p>
+</blockquote>
+<h3 id="45-%E4%B8%8E%E6%9C%AC%E5%AE%9E%E9%AA%8C%E7%9A%84%E8%81%94%E7%B3%BB">4.5 与本实验的联系</h3>
+<table>
+<thead>
+<tr>
+<th>文献结论</th>
+<th>本实验验证</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>同余类定理：存在无穷多模型具有相同似然</td>
+<td>TDBD MLE 的累积似然比 BAMM θ_true 高 +21 nats</td>
+</tr>
+<tr>
+<td>BAMM 的信号在数据不足时难以检测</td>
+<td>即使用 20 棵 n=80 的同源树联合推断，SMC 仍收敛到 TDBD</td>
+</tr>
+<tr>
+<td>regime-shift 模型与时变模型可互相近似</td>
+<td>BAMM 边际化后的有效速率 ≈ TDBD 的指数函数形式</td>
+</tr>
+<tr>
+<td>模型选择依赖参数优化公平性</td>
+<td>固定 θ_true 的 BAMM 必然输给 MLE 优化的 TDBD/CRBD</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-%E6%A0%B8%E5%BF%83%E7%BB%93%E8%AE%BA">5 核心结论</h2>
+<h3 id="51-bammtrue-%E8%BE%93%E7%BB%99-crbdtdbd-mle-%E6%98%AF%E7%BB%9F%E8%AE%A1%E7%8E%B0%E8%B1%A1%E4%B8%8D%E6%98%AF%E6%A8%A1%E5%9E%8B%E7%BC%BA%E9%99%B7">5.1 BAMM_true 输给 CRBD/TDBD MLE 是统计现象，不是模型缺陷</h3>
+<p>用未优化的 θ_true 对比经过优化的 MLE，后者在有限数据上几乎总会赢。这不意味着 BAMM 作为一个模型类比 TDBD 差。</p>
+<h3 id="52-%E5%8D%95%E5%90%91%E5%88%87%E6%8D%A2-bamm-%E4%B8%8E-tdbd-%E7%9A%84%E7%BB%93%E6%9E%84%E6%80%A7%E8%BF%91%E4%BC%BC">5.2 单向切换 BAMM 与 TDBD 的结构性近似</h3>
+<p>当 BAMM 只有一层、切换单向时，边际化后的有效速率自然呈指数型时间依赖——这正是 TDBD 的参数形式。这一现象被 Louca &amp; Pennell (2020) 的同余类定理严格刻画。</p>
+<p>两者不可区分的条件：</p>
+<ul>
+<li>净多样化率 $r_{\text{bg}} \approx r_{\text{fg}}$（本实验中 0.35 = 0.35，完全相等）</li>
+<li>切换率 η 不太大（不产生突变式的树形变化）</li>
+</ul>
+<p>要打破这种近似等价，需要让 BAMM 产生 TDBD <strong>结构上无法表达</strong>的树形特征，例如：</p>
+<ul>
+<li><strong>双向切换</strong>（bg ↔ fg）：TDBD 只能建模单调趋势</li>
+<li><strong>突变式速率变化</strong>（大 η + 大 Δr）：指数光滑函数无法拟合阶跃</li>
+<li><strong>多于两个 regime</strong>（嵌套 BAMM）：多级阶梯式速率不是单指数函数能描述的</li>
+</ul>
+<h3 id="53-%E5%AF%B9%E7%A8%8B%E5%BA%8F%E5%90%88%E6%88%90%E6%96%B9%E6%B3%95%E7%9A%84%E5%90%AF%E7%A4%BA">5.3 对程序合成方法的启示</h3>
+<p>本项目的贝叶斯程序合成框架（SMC / MCMC）恢复表达式的能力，本质上受限于底层模型的可辨识性。当 BAMM 和 TDBD 在似然层面不可区分时，合成器选择更简洁的 TDBD 是<strong>奥卡姆剃刀意义上的正确行为</strong>，而非方法论缺陷。</p>
+<p>改善恢复效果的可行方向：</p>
+<ol>
+<li><strong>利用多棵同源树的联合推断</strong>（本项目已实现的累积后验 SMC），通过累积证据放大微小的模型差异。</li>
+<li><strong>设计具有更强可辨识信号的 BAMM 参数</strong>，如大 η + 悬殊的 Δr，产生 TDBD 无法拟合的阶跃式速率变化。</li>
+<li><strong>引入非树形数据</strong>（化石记录、谱系地理信息等），打破 Louca &amp; Pennell 证明的仅基于现存物种树的同余类限制。</li>
+</ol>
+
+</body>
+</html>

@@ -1,0 +1,487 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{tikz}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=green!50!black,urlcolor=blue!70!black}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\Lam}{\Lambda}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\title{\bfseries Closed-Form Likelihood Computation for \\Birth--Death Phylogenetic Models}
+\author{PhyloBayesSynth Project}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We derive closed-form solutions for the likelihood of reconstructed phylogenetic trees under the constant-rate birth--death (CRBD) and time-dependent birth--death with constant turnover (TDBD) models.
+The key observation is that when the extinction-to-speciation ratio $\eps = \mu/\lambda$ is constant, the Riccati ODE for the extinction probability $E(\tau)$ becomes separable and admits an explicit solution.
+The branch propagation factor for the density $D(\tau)$ also has a closed form obtained by substitution.
+For the multi-state BAMM model, we exploit the upper-triangular structure of the transition matrix to solve absorbing (foreground) states analytically, reducing the ODE dimension for coupled (background) states.
+All formulas are verified against high-precision numerical ODE solutions (118 tests, tolerance $10^{-6}$).
+\end{abstract}
+
+\tableofcontents
+
+%% ====================================================================
+\section{Notation and Setup}
+%% ====================================================================
+
+Consider a reconstructed (extant-only) phylogenetic tree with $n$ tips, $n-1$ internal nodes, and $2n-2$ branches.
+We use the \emph{age} convention:
+\begin{itemize}[nosep]
+  \item $\tau$ = time before present (age): present $=0$, root $=T$.
+  \item Each branch connects a child node at age $\tau_c$ to a parent node at age $\tau_p > \tau_c$.
+  \item All leaves have age $\tau_{\text{leaf}} = 0$.
+\end{itemize}
+
+Two key quantities propagate through the tree:
+\begin{itemize}[nosep]
+  \item $E(\tau)$: probability that a lineage existing at age $\tau$ goes completely extinct before the present.
+  \item $D(\tau)$: probability density of the observed subtree rooted at age $\tau$.
+\end{itemize}
+
+The full log-likelihood of the tree under any birth--death model is:
+\begin{equation}\label{eq:loglik}
+  \log \mathcal{L} = \log \Gamma(n) + \log D_{\text{root}} - 2\log\bigl(1 - E(T)\bigr),
+\end{equation}
+where $\Gamma(n) = (n-1)!$ accounts for label permutations and the last term conditions on the root's two initial lineages both surviving to the present.
+
+%% ====================================================================
+\section{The Riccati Structure}
+%% ====================================================================
+
+For a single-state birth--death process with speciation rate $\lambda(\tau)$ and extinction rate $\mu(\tau)$, the extinction probability satisfies:
+\begin{equation}\label{eq:E-ode}
+  \frac{\dd E}{\dd \tau} = \mu(\tau) - \bigl(\lambda(\tau) + \mu(\tau)\bigr)\,E + \lambda(\tau)\,E^2, \qquad E(0) = 0.
+\end{equation}
+This is a \textbf{Riccati equation}.
+In general, Riccati equations do not have closed-form solutions.
+However, when $\mu(\tau)/\lambda(\tau) = \eps$ is constant, \eqref{eq:E-ode} factors as:
+\begin{equation}\label{eq:E-ode-factored}
+  \frac{\dd E}{\dd \tau} = \lambda(\tau)\,(E - 1)(E - \eps).
+\end{equation}
+This is \textbf{separable}: the left-hand side depends only on $E$, and the right-hand side's $\tau$-dependence enters solely through $\lambda(\tau)$.
+
+The density $D(\tau)$ satisfies a linear ODE along each branch:
+\begin{equation}\label{eq:D-ode}
+  \frac{\dd D}{\dd \tau} = -\bigl(\lambda(\tau) + \mu(\tau) - 2\lambda(\tau)\,E(\tau)\bigr)\,D.
+\end{equation}
+Once $E(\tau)$ is known analytically, this can be integrated directly.
+
+%% ====================================================================
+\section{TDBD Closed-Form Solution (General Case)}
+\label{sec:tdbd}
+%% ====================================================================
+
+\subsection{Model Definition}
+
+The TDBD model has time-varying rates with constant turnover ratio:
+\[
+  \lambda(\tau) = \lambda_0 \,\ee^{z(T - \tau)}, \qquad \mu(\tau) = \eps\,\lambda(\tau), \qquad 0 \le \eps < 1.
+\]
+Define the cumulative speciation rate:
+\begin{equation}\label{eq:Lambda}
+  \Lam(\tau) \;=\; \int_0^{\tau} \lambda(s)\,\dd s
+  \;=\; \begin{cases}
+    \dfrac{\lambda_0}{z}\bigl(\ee^{zT} - \ee^{z(T-\tau)}\bigr), & z \neq 0, \\[6pt]
+    \lambda_0\,\tau, & z = 0.
+  \end{cases}
+\end{equation}
+
+\subsection{Extinction Probability $E(\tau)$}
+
+\begin{proposition}[TDBD extinction]\label{prop:tdbd-E}
+The solution to \eqref{eq:E-ode-factored} with $E(0) = 0$ is:
+\begin{equation}\label{eq:tdbd-E}
+  \boxed{E(\tau) = \frac{\eps\,(1 - \psi)}{\ \eps - \psi\ }}\,,
+  \qquad \psi(\tau) = \exp\!\bigl((1-\eps)\,\Lam(\tau)\bigr).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Separate variables in \eqref{eq:E-ode-factored}:
+\[
+  \frac{\dd E}{(E - 1)(E - \eps)} = \lambda(\tau)\,\dd\tau.
+\]
+Partial-fraction decomposition ($\eps \neq 1$):
+\[
+  \frac{1}{(E-1)(E-\eps)} = \frac{1}{1 - \eps}\left(\frac{1}{E - 1} - \frac{1}{E - \eps}\right).
+\]
+Integrating both sides from $(E=0,\,\tau=0)$ to $(E,\,\tau)$:
+\[
+  \frac{1}{1-\eps}\,\ln\!\left|\frac{E-1}{E-\eps}\right| - \frac{1}{1-\eps}\,\ln\!\frac{1}{\eps}
+  = \Lam(\tau).
+\]
+Rearranging:
+\[
+  \frac{E - 1}{E - \eps} = \frac{1}{\eps}\,\ee^{(1-\eps)\Lam(\tau)} = \frac{\psi}{\eps}.
+\]
+Solving for $E$:
+\[
+  E - 1 = \frac{\psi}{\eps}(E - \eps)
+  \;\;\Longrightarrow\;\;
+  E\!\left(1 - \frac{\psi}{\eps}\right) = 1 - \psi
+  \;\;\Longrightarrow\;\;
+  E = \frac{\eps(1 - \psi)}{\eps - \psi}. \qedhere
+\]
+\end{proof}
+
+\begin{corollary}[Survival probability]
+\begin{equation}\label{eq:tdbd-surv}
+  1 - E(\tau) = \frac{(1 - \eps)\,\psi(\tau)}{\ \psi(\tau) - \eps\ }\,.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Direct computation:
+$1 - E = 1 - \frac{\eps(1-\psi)}{\eps - \psi}
+= \frac{(\eps - \psi) - \eps(1-\psi)}{\eps - \psi}
+= \frac{\psi(\eps - 1)}{\eps - \psi}
+= \frac{(1-\eps)\,\psi}{\psi - \eps}$.
+\end{proof}
+
+\subsection{Branch Propagation Factor}
+
+\begin{proposition}[TDBD branch factor]\label{prop:tdbd-D}
+Along a branch from child age $\tau_c$ to parent age $\tau_p$, the D-propagation factor is:
+\begin{equation}\label{eq:tdbd-branch}
+  \boxed{\frac{D(\tau_p)}{D(\tau_c)}
+  = \frac{\psi_p\,(\psi_c - \eps)^2}{\psi_c\,(\psi_p - \eps)^2}}\,,
+\end{equation}
+where $\psi_c = \psi(\tau_c)$ and $\psi_p = \psi(\tau_p)$.
+\end{proposition}
+
+\begin{proof}
+From \eqref{eq:D-ode}, the propagation factor is $\exp\!\bigl(-\!\int_{\tau_c}^{\tau_p}\!\alpha(s)\,\dd s\bigr)$ where $\alpha = \lambda(1 + \eps - 2E)$.
+
+\medskip\noindent\textbf{Step 1: Simplify $1 + \eps - 2E$.}
+\[
+  1 + \eps - 2E = \frac{(1+\eps)(\eps - \psi) - 2\eps(1-\psi)}{\eps - \psi}
+  = \frac{(1-\eps)(\eps + \psi)}{\ \psi - \eps\ }\,.
+\]
+
+\medskip\noindent\textbf{Step 2: Change of variables.}
+Since $\dd\psi = (1-\eps)\,\lambda(s)\,\psi\,\dd s$, we have $\lambda(s)\,\dd s = \dd\psi / \bigl((1-\eps)\,\psi\bigr)$.
+\begin{align}
+  \int_{\tau_c}^{\tau_p} \lambda(s)\,\frac{(1-\eps)(\eps+\psi)}{\psi - \eps}\,\dd s
+  &= \int_{\psi_c}^{\psi_p} \frac{\eps + \psi}{\psi(\psi - \eps)}\,\dd\psi.
+\end{align}
+
+\medskip\noindent\textbf{Step 3: Partial fractions.}
+\[
+  \frac{\eps + \psi}{\psi(\psi - \eps)}
+  = \frac{-1}{\psi} + \frac{2}{\psi - \eps}\,.
+\]
+
+\medskip\noindent\textbf{Step 4: Integrate.}
+\[
+  \int_{\psi_c}^{\psi_p} \!\left(\frac{-1}{\psi} + \frac{2}{\psi - \eps}\right)\dd\psi
+  = \Bigl[-\ln\psi + 2\ln|\psi - \eps|\Bigr]_{\psi_c}^{\psi_p}
+  = \ln\frac{(\psi_p - \eps)^2}{\psi_p} - \ln\frac{(\psi_c - \eps)^2}{\psi_c}\,.
+\]
+
+Taking the negative exponential:
+\[
+  \frac{D(\tau_p)}{D(\tau_c)} = \exp\!\left(-\int\alpha\,\dd s\right)
+  = \frac{\psi_p\,(\psi_c - \eps)^2}{\psi_c\,(\psi_p - \eps)^2}\,. \qedhere
+\]
+\end{proof}
+
+In logarithmic form (as implemented):
+\begin{equation}\label{eq:tdbd-log-branch}
+  \log\frac{D(\tau_p)}{D(\tau_c)}
+  = (1-\eps)\bigl(\Lam_p - \Lam_c\bigr) + 2\log|\psi_c - \eps| - 2\log|\psi_p - \eps|,
+\end{equation}
+where $\Lam_c = \Lam(\tau_c)$, $\Lam_p = \Lam(\tau_p)$.
+
+\subsection{Full TDBD Log-Likelihood}
+
+Assembling \eqref{eq:loglik} using the branch factors and speciation-event contributions:
+\begin{equation}\label{eq:tdbd-loglik}
+  \log\mathcal{L}_{\text{TDBD}}
+  = \log\Gamma(n)
+  + \sum_{k=1}^{n-1} \log\lambda(\tau_k)
+  + \sum_{\text{branches}} \log\frac{D(\tau_p)}{D(\tau_c)}
+  - 2\log\!\bigl(1 - E(T)\bigr),
+\end{equation}
+where $\tau_k$ are the ages of the $n-1$ internal nodes (speciation events), and each branch factor is given by \eqref{eq:tdbd-log-branch}.
+
+%% ====================================================================
+\section{CRBD as a Special Case ($z = 0$)}
+\label{sec:crbd}
+%% ====================================================================
+
+When $z = 0$, rates are constant: $\lambda(\tau) = \lambda$, $\mu(\tau) = \mu$, $\eps = \mu/\lambda$.
+Then $\Lam(\tau) = \lambda\tau$ and $\psi(\tau) = \ee^{(\lambda - \mu)\tau} = \ee^{r\tau}$ where $r = \lambda - \mu$.
+
+\subsection{CRBD Extinction}
+
+Substituting into \eqref{eq:tdbd-E}:
+\begin{equation}\label{eq:crbd-E}
+  E(\tau) = \frac{\mu\,(\ee^{r\tau} - 1)}{\lambda\,\ee^{r\tau} - \mu}\,.
+\end{equation}
+
+\subsection{CRBD Branch Factor}
+
+Define $g(\tau) = \log|\lambda\ee^{r\tau} - \mu|$. From \eqref{eq:tdbd-log-branch}:
+\begin{equation}\label{eq:crbd-branch}
+  \log\frac{D(\tau_p)}{D(\tau_c)}
+  = r\,(\tau_p - \tau_c) + 2\,g(\tau_c) - 2\,g(\tau_p).
+\end{equation}
+
+\subsection{CRBD Log-Likelihood}
+
+Since $\lambda$ is constant, $\sum_{k} \log\lambda(\tau_k) = (n-1)\log\lambda$:
+\begin{equation}\label{eq:crbd-loglik}
+  \log\mathcal{L}_{\text{CRBD}}
+  = \log\Gamma(n) + (n-1)\log\lambda
+  + \sum_{\text{branches}}\Bigl[r\,(\tau_p - \tau_c) + 2g(\tau_c) - 2g(\tau_p)\Bigr]
+  - 2\log\!\bigl(1 - E(T)\bigr).
+\end{equation}
+
+\subsection{Critical Case $\lambda = \mu$}
+
+When $r \to 0$, L'H\^opital's rule gives:
+\begin{equation}
+  E(\tau) = \frac{\lambda\tau}{1 + \lambda\tau}\,,
+  \qquad
+  1 - E(\tau) = \frac{1}{1 + \lambda\tau}\,,
+  \qquad
+  \log\frac{D(\tau_p)}{D(\tau_c)} = 2\log\frac{1 + \lambda\tau_c}{1 + \lambda\tau_p}\,.
+\end{equation}
+
+%% ====================================================================
+\section{CRB and TDB: Pure-Birth Models ($\mu = 0$)}
+\label{sec:pure-birth}
+%% ====================================================================
+
+\subsection{CRB ($\lambda$ constant, $\mu = 0$)}
+
+With $\eps = 0$: $E(\tau) = 0$, $D(\tau)$ decays at rate $\lambda$, and no root conditioning is needed:
+\begin{equation}\label{eq:crb}
+  \log\mathcal{L}_{\text{CRB}} = \log\Gamma(n) + (n-1)\log\lambda - \lambda\,S,
+\end{equation}
+where $S = \sum_{\text{branches}} \ell_i$ is the total branch length. This matches the well-known Yule-process likelihood.
+
+\subsection{TDB ($\lambda(\tau)$ time-varying, $\mu = 0$)}
+
+With $\eps = 0$: $E = 0$, and the branch factor simplifies to $\exp\!\bigl(-\!\int_{\tau_c}^{\tau_p}\!\lambda(s)\,\dd s\bigr)$:
+\begin{equation}\label{eq:tdb}
+  \log\mathcal{L}_{\text{TDB}}
+  = \log\Gamma(n) + \sum_{k=1}^{n-1}\log\lambda(\tau_k) - \sum_{\text{branches}} \Lam(\tau_p, \tau_c),
+\end{equation}
+where $\Lam(\tau_p, \tau_c) = \int_{\tau_c}^{\tau_p} \lambda(s)\,\dd s$ has the analytical expression in \eqref{eq:Lambda}.
+
+%% ====================================================================
+\section{Degeneracy Relations}
+\label{sec:degeneracy}
+%% ====================================================================
+
+The model family has the following degeneracy hierarchy (Table~\ref{tab:degeneracy}):
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Specialization} & \textbf{Reduces to} & \textbf{Mechanism} \\
+\midrule
+$\text{CRBD}(\lambda, \mu\!=\!0)$ & $\text{CRB}(\lambda)$ & $\eps = 0$, no extinction \\
+$\text{TDBD}(\lambda_0, z, \eps\!=\!0)$ & $\text{TDB}(\lambda_0, z)$ & $\psi \to \ee^{\Lam}$, $E = 0$ \\
+$\text{TDB}(\lambda_0, z\!=\!0)$ & $\text{CRB}(\lambda_0)$ & $\lambda(\tau) = \lambda_0$ \\
+$\text{TDBD}(\lambda_0, z\!=\!0, \eps)$ & $\text{CRBD}(\lambda_0, \eps\lambda_0)$ & $\Lam = \lambda_0\tau$ \\
+$\text{BAMM}(\eta\!=\!0, \text{bg}, \text{fg})$ & bg & no switching \\
+$\text{BAMM}(\eta, M, M)$ & $M$ & identical regimes \\
+\bottomrule
+\end{tabular}
+\caption{Degeneracy relations among models. All are verified numerically.}
+\label{tab:degeneracy}
+\end{table}
+
+%% ====================================================================
+\section{BAMM: Hybrid Analytical--Numerical Computation}
+\label{sec:bamm}
+%% ====================================================================
+
+\subsection{Multi-State ODE System}
+
+A single-layer $\text{BAMM}(\eta, \text{bg}, \text{fg})$ model has two states: background (state 0) and foreground (state 1).
+The transition matrix is:
+\[
+  Q = \begin{pmatrix} -\eta & \eta \\ 0 & 0 \end{pmatrix}.
+\]
+The extinction ODE becomes a coupled 2D system:
+\begin{align}
+  \frac{\dd E_0}{\dd\tau} &= \mu_b - (\lambda_b + \mu_b + \eta)\,E_0 + \lambda_b\,E_0^2 + \eta\,E_1, \label{eq:bamm-E0}\\
+  \frac{\dd E_1}{\dd\tau} &= \mu_f - (\lambda_f + \mu_f)\,E_1 + \lambda_f\,E_1^2. \label{eq:bamm-E1}
+\end{align}
+
+\subsection{Key Observation: One-Way Coupling}
+
+Equation \eqref{eq:bamm-E1} for the foreground state is \textbf{independent} of $E_0$.
+Since $Q_{10} = 0$ (no reverse switching), the fg state is an \emph{absorbing state}.
+Its equation is a standard single-state Riccati equation with closed-form solution (Section~\ref{sec:tdbd}).
+
+The background equation \eqref{eq:bamm-E0} depends on $E_1(\tau)$ through the forcing term $\eta\,E_1$.
+Even with $E_1$ known analytically, the resulting non-autonomous Riccati equation for $E_0$ does not generally admit a closed form, and must be solved numerically.
+
+\subsection{Dimension Reduction}
+
+Our hybrid strategy is:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Identify absorbing states}: state $i$ with $\sum_{j\neq i} |Q_{ij}| = 0$.
+  \item \textbf{Solve absorbing states analytically}: use the CRBD/TDBD closed form from Section~\ref{sec:tdbd}.
+  \item \textbf{Reduce ODE dimension}: integrate only the non-absorbing states numerically, plugging in the analytical $E_j(\tau)$ for absorbing states $j$ as known forcing functions.
+\end{enumerate}
+
+For a single-layer BAMM with non-BAMM submodels, this reduces the extinction ODE from 2D to \textbf{1D}, and similarly for the D propagation.
+
+\subsection{Nested BAMM}
+
+For nested BAMM (e.g., $\text{BAMM}(\eta_1, \text{BAMM}(\eta_2, M_1, M_2), M_3)$), the state space grows:
+\[
+  Q = \begin{pmatrix}
+    -\eta_2 - \eta_1 & \eta_2 & \eta_1 \\
+    0 & -\eta_1 & \eta_1 \\
+    0 & 0 & 0
+  \end{pmatrix}.
+\]
+Only state 2 (the ultimate fg) is absorbing.
+States 0 and 1 require numerical ODE integration, but the system is reduced from 3D to 2D.
+
+In general, for an $N$-state system with $k$ absorbing states, the ODE dimension is reduced from $N$ to $N - k$.
+
+\subsection{D Propagation}
+
+The same decomposition applies to the D-propagation ODE.
+For absorbing state $j$ with CRBD parameters $(\lambda_j, \mu_j)$:
+\[
+  D_j(\tau) = D_j(\tau_c) \cdot \frac{\psi_j(\tau)\,\bigl(\psi_j(\tau_c) - \eps_j\bigr)^2}{\psi_j(\tau_c)\,\bigl(\psi_j(\tau) - \eps_j\bigr)^2}\,,
+  \qquad \tau \in [\tau_c, \tau_p].
+\]
+For non-absorbing state $i$, the ODE is:
+\[
+  \frac{\dd D_i}{\dd\tau} = -\bigl(\lambda_i + \mu_i - Q_{ii} - 2\lambda_i E_i\bigr)\,D_i + \sum_{j \neq i} Q_{ij}\,D_j(\tau),
+\]
+where $D_j(\tau)$ for absorbing $j$ is evaluated analytically at each ODE step.
+
+%% ====================================================================
+\section{Numerical Stability}
+\label{sec:stability}
+%% ====================================================================
+
+The closed-form expressions involve exponentials that can overflow.
+We employ the following safeguards:
+
+\begin{enumerate}[nosep]
+\item \textbf{Log-space computation}: The branch factor \eqref{eq:tdbd-log-branch} is computed entirely in log-space.
+
+\item \textbf{Stable $\log|\psi - \eps|$}: When $\log\psi > 50$, we use:
+\[
+  \log|\psi - \eps| = \log\psi + \log\!\bigl(1 - \eps\,\ee^{-\log\psi}\bigr),
+\]
+avoiding materialization of $\psi$.
+
+\item \textbf{Critical-case branches}: When $|r| < 10^{-12}$ (CRBD) or $|1-\eps| < 10^{-12}$ (TDBD), we switch to the L'H\^opital limit formulas.
+
+\item \textbf{Asymptotic limits}: When $r\tau \to +\infty$: $E \to \eps$, $1-E \to 1-\eps$. When $r\tau \to -\infty$: $E \to 1$, $1-E \to 0$.
+\end{enumerate}
+
+%% ====================================================================
+\section{Computational Complexity}
+\label{sec:complexity}
+%% ====================================================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Model} & \textbf{Previous} & \textbf{Now} & \textbf{Speedup} \\
+\midrule
+CRB & $O(n)$ closed & $O(n)$ closed & --- \\
+TDB & $O(n)$ closed & $O(n)$ closed & --- \\
+CRBD & ODE per branch & $O(n)$ closed & $\gg 1\times$ \\
+TDBD & ODE per branch & $O(n)$ closed & $\gg 1\times$ \\
+BAMM (1-layer) & $N$-dim ODE per branch & $(N\!-\!k)$-dim ODE & $\sim 2\times$ \\
+BAMM (nested) & $N$-dim ODE per branch & $(N\!-\!k)$-dim ODE & depends on $k/N$ \\
+\bottomrule
+\end{tabular}
+\caption{Computational complexity comparison. $n$ = number of tips, $N$ = number of states, $k$ = number of absorbing states with closed form.}
+\label{tab:complexity}
+\end{table}
+
+For CRBD and TDBD, the improvement is most dramatic: from $O(n)$ calls to a BDF ODE solver (each requiring multiple Newton iterations and Jacobian evaluations) to $O(n)$ evaluations of elementary functions ($\exp$, $\log$).
+
+%% ====================================================================
+\section{Verification}
+\label{sec:verification}
+%% ====================================================================
+
+All closed-form solutions are verified against high-precision numerical ODE integration (\texttt{scipy.integrate.solve\_ivp}, BDF method, \texttt{rtol}=$10^{-12}$, \texttt{atol}=$10^{-14}$).
+The test suite contains 118 checks:
+
+\begin{itemize}[nosep]
+  \item CRBD $E(\tau)$: 5 parameter sets $\times$ 5 time points = 25 checks.
+  \item CRBD $\log(1-E)$: 4 parameter sets $\times$ 3 time points = 12 checks.
+  \item CRBD branch factor: 4 parameter sets $\times$ 3 branch segments = 12 checks.
+  \item CRBD full likelihood vs.\ rate system: 5 checks.
+  \item CRBD $\to$ CRB degeneracy: 3 checks.
+  \item TDBD $E(\tau)$: 5 parameter sets $\times$ 5 time points = 25 checks.
+  \item TDBD branch factor: 4 parameter sets $\times$ 3 branch segments = 12 checks.
+  \item TDBD full likelihood vs.\ rate system: 4 checks.
+  \item TDBD $\to$ TDB degeneracy: 3 checks.
+  \item TDBD($z=0$) $\to$ CRBD degeneracy: 3 checks.
+  \item BAMM degeneracies ($\eta=0$, $\text{bg}=\text{fg}$): 2 checks.
+  \item BAMM hybrid (1-layer, 3-layer nesting): 3 checks.
+  \item Noise mixing ($\sigma=0,1,\infty$): 3 checks.
+  \item BAMM irreversibility: 2 checks.
+  \item Original regression suite: 4 checks.
+\end{itemize}
+
+All 118 tests pass with tolerance $10^{-6}$.
+
+%% ====================================================================
+\section{Summary of Formulas}
+\label{sec:summary}
+%% ====================================================================
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Quantity} & \textbf{Formula} \\
+\midrule
+$\psi(\tau)$ & $\exp\!\bigl((1-\eps)\,\Lam(\tau)\bigr)$ \\[2pt]
+$E(\tau)$ & $\dfrac{\eps\,(1 - \psi)}{\eps - \psi}$ \\[8pt]
+$1 - E(\tau)$ & $\dfrac{(1-\eps)\,\psi}{\psi - \eps}$ \\[8pt]
+$\log\dfrac{D(\tau_p)}{D(\tau_c)}$ & $(1-\eps)(\Lam_p - \Lam_c) + 2\log|\psi_c - \eps| - 2\log|\psi_p - \eps|$ \\[8pt]
+\midrule
+\multicolumn{2}{@{}l}{\textbf{CRBD specialization} ($z=0$, $\Lam = \lambda\tau$, $\psi = \ee^{r\tau}$, $r = \lambda - \mu$, $\eps = \mu/\lambda$):} \\[4pt]
+$E(\tau)$ & $\dfrac{\mu(\ee^{r\tau} - 1)}{\lambda\ee^{r\tau} - \mu}$ \\[8pt]
+$\log\dfrac{D(\tau_p)}{D(\tau_c)}$ & $r(\tau_p - \tau_c) + 2\log|\lambda\ee^{r\tau_c}\!-\!\mu| - 2\log|\lambda\ee^{r\tau_p}\!-\!\mu|$ \\[4pt]
+\bottomrule
+\end{tabular}
+\caption{Summary of closed-form solutions.}
+\end{table}
+
+\end{document}

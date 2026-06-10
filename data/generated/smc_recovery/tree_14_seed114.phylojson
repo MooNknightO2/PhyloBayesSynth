@@ -1,0 +1,1127 @@
+{
+  "format": "phylojson",
+  "taxa": [
+    {
+      "id": 0,
+      "name": "Taxon_0"
+    },
+    {
+      "id": 1,
+      "name": "Taxon_1"
+    },
+    {
+      "id": 2,
+      "name": "Taxon_2"
+    },
+    {
+      "id": 3,
+      "name": "Taxon_3"
+    },
+    {
+      "id": 4,
+      "name": "Taxon_4"
+    },
+    {
+      "id": 5,
+      "name": "Taxon_5"
+    },
+    {
+      "id": 6,
+      "name": "Taxon_6"
+    },
+    {
+      "id": 7,
+      "name": "Taxon_7"
+    },
+    {
+      "id": 8,
+      "name": "Taxon_8"
+    },
+    {
+      "id": 9,
+      "name": "Taxon_9"
+    },
+    {
+      "id": 10,
+      "name": "Taxon_10"
+    },
+    {
+      "id": 11,
+      "name": "Taxon_11"
+    },
+    {
+      "id": 12,
+      "name": "Taxon_12"
+    },
+    {
+      "id": 13,
+      "name": "Taxon_13"
+    },
+    {
+      "id": 14,
+      "name": "Taxon_14"
+    },
+    {
+      "id": 15,
+      "name": "Taxon_15"
+    },
+    {
+      "id": 16,
+      "name": "Taxon_16"
+    },
+    {
+      "id": 17,
+      "name": "Taxon_17"
+    },
+    {
+      "id": 18,
+      "name": "Taxon_18"
+    },
+    {
+      "id": 19,
+      "name": "Taxon_19"
+    },
+    {
+      "id": 20,
+      "name": "Taxon_20"
+    },
+    {
+      "id": 21,
+      "name": "Taxon_21"
+    },
+    {
+      "id": 22,
+      "name": "Taxon_22"
+    },
+    {
+      "id": 23,
+      "name": "Taxon_23"
+    },
+    {
+      "id": 24,
+      "name": "Taxon_24"
+    },
+    {
+      "id": 25,
+      "name": "Taxon_25"
+    },
+    {
+      "id": 26,
+      "name": "Taxon_26"
+    },
+    {
+      "id": 27,
+      "name": "Taxon_27"
+    },
+    {
+      "id": 28,
+      "name": "Taxon_28"
+    },
+    {
+      "id": 29,
+      "name": "Taxon_29"
+    },
+    {
+      "id": 30,
+      "name": "Taxon_30"
+    },
+    {
+      "id": 31,
+      "name": "Taxon_31"
+    },
+    {
+      "id": 32,
+      "name": "Taxon_32"
+    },
+    {
+      "id": 33,
+      "name": "Taxon_33"
+    },
+    {
+      "id": 34,
+      "name": "Taxon_34"
+    },
+    {
+      "id": 35,
+      "name": "Taxon_35"
+    },
+    {
+      "id": 36,
+      "name": "Taxon_36"
+    },
+    {
+      "id": 37,
+      "name": "Taxon_37"
+    },
+    {
+      "id": 38,
+      "name": "Taxon_38"
+    },
+    {
+      "id": 39,
+      "name": "Taxon_39"
+    },
+    {
+      "id": 40,
+      "name": "Taxon_40"
+    },
+    {
+      "id": 41,
+      "name": "Taxon_41"
+    },
+    {
+      "id": 42,
+      "name": "Taxon_42"
+    },
+    {
+      "id": 43,
+      "name": "Taxon_43"
+    },
+    {
+      "id": 44,
+      "name": "Taxon_44"
+    },
+    {
+      "id": 45,
+      "name": "Taxon_45"
+    },
+    {
+      "id": 46,
+      "name": "Taxon_46"
+    },
+    {
+      "id": 47,
+      "name": "Taxon_47"
+    },
+    {
+      "id": 48,
+      "name": "Taxon_48"
+    },
+    {
+      "id": 49,
+      "name": "Taxon_49"
+    },
+    {
+      "id": 50,
+      "name": "Taxon_50"
+    },
+    {
+      "id": 51,
+      "name": "Taxon_51"
+    },
+    {
+      "id": 52,
+      "name": "Taxon_52"
+    },
+    {
+      "id": 53,
+      "name": "Taxon_53"
+    },
+    {
+      "id": 54,
+      "name": "Taxon_54"
+    },
+    {
+      "id": 55,
+      "name": "Taxon_55"
+    },
+    {
+      "id": 56,
+      "name": "Taxon_56"
+    },
+    {
+      "id": 57,
+      "name": "Taxon_57"
+    },
+    {
+      "id": 58,
+      "name": "Taxon_58"
+    },
+    {
+      "id": 59,
+      "name": "Taxon_59"
+    },
+    {
+      "id": 60,
+      "name": "Taxon_60"
+    },
+    {
+      "id": 61,
+      "name": "Taxon_61"
+    },
+    {
+      "id": 62,
+      "name": "Taxon_62"
+    },
+    {
+      "id": 63,
+      "name": "Taxon_63"
+    },
+    {
+      "id": 64,
+      "name": "Taxon_64"
+    },
+    {
+      "id": 65,
+      "name": "Taxon_65"
+    },
+    {
+      "id": 66,
+      "name": "Taxon_66"
+    },
+    {
+      "id": 67,
+      "name": "Taxon_67"
+    },
+    {
+      "id": 68,
+      "name": "Taxon_68"
+    },
+    {
+      "id": 69,
+      "name": "Taxon_69"
+    },
+    {
+      "id": 70,
+      "name": "Taxon_70"
+    },
+    {
+      "id": 71,
+      "name": "Taxon_71"
+    },
+    {
+      "id": 72,
+      "name": "Taxon_72"
+    },
+    {
+      "id": 73,
+      "name": "Taxon_73"
+    },
+    {
+      "id": 74,
+      "name": "Taxon_74"
+    },
+    {
+      "id": 75,
+      "name": "Taxon_75"
+    },
+    {
+      "id": 76,
+      "name": "Taxon_76"
+    },
+    {
+      "id": 77,
+      "name": "Taxon_77"
+    },
+    {
+      "id": 78,
+      "name": "Taxon_78"
+    },
+    {
+      "id": 79,
+      "name": "Taxon_79"
+    }
+  ],
+  "trees": [
+    {
+      "name": "BAMM_synthetic",
+      "root": {
+        "branch_length": 0.0,
+        "children": [
+          {
+            "branch_length": 1.8677079533142962,
+            "children": [
+              {
+                "branch_length": 1.4285974454296362,
+                "children": [
+                  {
+                    "branch_length": 4.608941075479831,
+                    "children": [
+                      {
+                        "branch_length": 0.2451845529648029,
+                        "children": [
+                          {
+                            "branch_length": 0.3915841994815068,
+                            "children": [],
+                            "taxon": 0
+                          },
+                          {
+                            "branch_length": 0.3915841994815068,
+                            "children": [],
+                            "taxon": 1
+                          }
+                        ]
+                      },
+                      {
+                        "branch_length": 0.6367687524463097,
+                        "children": [],
+                        "taxon": 2
+                      }
+                    ]
+                  },
+                  {
+                    "branch_length": 2.252784550658486,
+                    "children": [
+                      {
+                        "branch_length": 0.8531916933325903,
+                        "children": [
+                          {
+                            "branch_length": 0.7912359938823839,
+                            "children": [
+                              {
+                                "branch_length": 0.6748582212117764,
+                                "children": [
+                                  {
+                                    "branch_length": 0.015574360477083715,
+                                    "children": [
+                                      {
+                                        "branch_length": 0.6093163992701527,
+                                        "children": [
+                                          {
+                                            "branch_length": 0.04874860909366774,
+                                            "children": [
+                                              {
+                                                "branch_length": 0.0,
+                                                "children": [],
+                                                "taxon": 3
+                                              },
+                                              {
+                                                "branch_length": 0.0,
+                                                "children": [],
+                                                "taxon": 4
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "branch_length": 0.04874860909366774,
+                                            "children": [],
+                                            "taxon": 5
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "branch_length": 0.6580650083638204,
+                                        "children": [],
+                                        "taxon": 6
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "branch_length": 0.6736393688409041,
+                                    "children": [],
+                                    "taxon": 7
+                                  }
+                                ]
+                              },
+                              {
+                                "branch_length": 0.9766087348781234,
+                                "children": [
+                                  {
+                                    "branch_length": 0.3179137261529341,
+                                    "children": [
+                                      {
+                                        "branch_length": 0.024479428939336856,
+                                        "children": [
+                                          {
+                                            "branch_length": 0.02949570008228619,
+                                            "children": [],
+                                            "taxon": 8
+                                          },
+                                          {
+                                            "branch_length": 0.02949570008228619,
+                                            "children": [],
+                                            "taxon": 9
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "branch_length": 0.05397512902162305,
+                                        "children": [],
+                                        "taxon": 10
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "branch_length": 0.2751311958897311,
+                                    "children": [
+                                      {
+                                        "branch_length": 0.09675765928482605,
+                                        "children": [],
+                                        "taxon": 11
+                                      },
+                                      {
+                                        "branch_length": 0.09675765928482605,
+                                        "children": [],
+                                        "taxon": 12
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "branch_length": 2.1397335839350644,
+                            "children": [],
+                            "taxon": 13
+                          }
+                        ]
+                      },
+                      {
+                        "branch_length": 0.2489041057509258,
+                        "children": [
+                          {
+                            "branch_length": 0.44972089043146024,
+                            "children": [
+                              {
+                                "branch_length": 1.60241481834991,
+                                "children": [
+                                  {
+                                    "branch_length": 0.018529331202014276,
+                                    "children": [
+                                      {
+                                        "branch_length": 0.2561390296726067,
+                                        "children": [
+                                          {
+                                            "branch_length": 0.41721710186073757,
+                                            "children": [],
+                                            "taxon": 14
+                                          },
+                                          {
+                                            "branch_length": 0.41721710186073757,
+                                            "children": [],
+                                            "taxon": 15
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "branch_length": 0.6733561315333443,
+                                        "children": [],
+                                        "taxon": 16
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "branch_length": 0.49973486345012574,
+                                    "children": [
+                                      {
+                                        "branch_length": 0.19215059928523281,
+                                        "children": [],
+                                        "taxon": 17
+                                      },
+                                      {
+                                        "branch_length": 0.19215059928523281,
+                                        "children": [],
+                                        "taxon": 18
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "branch_length": 2.2196185622245928,
+                                "children": [
+                                  {
+                                    "branch_length": 0.07468171886067587,
+                                    "children": [],
+                                    "taxon": 19
+                                  },
+                                  {
+                                    "branch_length": 0.07468171886067587,
+                                    "children": [],
+                                    "taxon": 20
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "branch_length": 2.744021171516729,
+                            "children": [],
+                            "taxon": 21
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "branch_length": 4.238124284723815,
+                "children": [
+                  {
+                    "branch_length": 0.8125159519266756,
+                    "children": [
+                      {
+                        "branch_length": 1.6236670367052861,
+                        "children": [],
+                        "taxon": 22
+                      },
+                      {
+                        "branch_length": 0.7550926628701218,
+                        "children": [
+                          {
+                            "branch_length": 0.6644196744954254,
+                            "children": [
+                              {
+                                "branch_length": 0.20415469933973895,
+                                "children": [],
+                                "taxon": 23
+                              },
+                              {
+                                "branch_length": 0.20415469933973895,
+                                "children": [],
+                                "taxon": 24
+                              }
+                            ]
+                          },
+                          {
+                            "branch_length": 0.28348730881049633,
+                            "children": [
+                              {
+                                "branch_length": 0.31613849364368285,
+                                "children": [
+                                  {
+                                    "branch_length": 0.26894857138098516,
+                                    "children": [],
+                                    "taxon": 25
+                                  },
+                                  {
+                                    "branch_length": 0.26894857138098516,
+                                    "children": [],
+                                    "taxon": 26
+                                  }
+                                ]
+                              },
+                              {
+                                "branch_length": 0.585087065024668,
+                                "children": [],
+                                "taxon": 27
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "branch_length": 2.327607707172553,
+                    "children": [
+                      {
+                        "branch_length": 0.10857528145940876,
+                        "children": [],
+                        "taxon": 28
+                      },
+                      {
+                        "branch_length": 0.10857528145940876,
+                        "children": [],
+                        "taxon": 29
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "branch_length": 1.2074842872173042,
+            "children": [
+              {
+                "branch_length": 6.567651458274341,
+                "children": [
+                  {
+                    "branch_length": 0.7668794811784281,
+                    "children": [],
+                    "taxon": 30
+                  },
+                  {
+                    "branch_length": 0.7668794811784281,
+                    "children": [],
+                    "taxon": 31
+                  }
+                ]
+              },
+              {
+                "branch_length": 1.055548822870077,
+                "children": [
+                  {
+                    "branch_length": 0.32757413715696826,
+                    "children": [
+                      {
+                        "branch_length": 1.3919758093862415,
+                        "children": [
+                          {
+                            "branch_length": 0.5549983004384451,
+                            "children": [
+                              {
+                                "branch_length": 0.38244341456298603,
+                                "children": [
+                                  {
+                                    "branch_length": 0.09963511193706065,
+                                    "children": [
+                                      {
+                                        "branch_length": 1.805429766326113,
+                                        "children": [
+                                          {
+                                            "branch_length": 0.2945781017693889,
+                                            "children": [
+                                              {
+                                                "branch_length": 0.08854858836388058,
+                                                "children": [
+                                                  {
+                                                    "branch_length": 0.36812955179895646,
+                                                    "children": [
+                                                      {
+                                                        "branch_length": 0.3101821659237256,
+                                                        "children": [
+                                                          {
+                                                            "branch_length": 0.6554871689189259,
+                                                            "children": [],
+                                                            "taxon": 32
+                                                          },
+                                                          {
+                                                            "branch_length": 0.6554871689189259,
+                                                            "children": [],
+                                                            "taxon": 33
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "branch_length": 0.5108186824936638,
+                                                        "children": [
+                                                          {
+                                                            "branch_length": 0.4548506523489877,
+                                                            "children": [],
+                                                            "taxon": 34
+                                                          },
+                                                          {
+                                                            "branch_length": 0.4548506523489877,
+                                                            "children": [],
+                                                            "taxon": 35
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "branch_length": 1.1201984218618524,
+                                                    "children": [
+                                                      {
+                                                        "branch_length": 0.09010497677629026,
+                                                        "children": [
+                                                          {
+                                                            "branch_length": 0.12349548800346533,
+                                                            "children": [],
+                                                            "taxon": 36
+                                                          },
+                                                          {
+                                                            "branch_length": 0.12349548800346533,
+                                                            "children": [],
+                                                            "taxon": 37
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "branch_length": 0.21360046477975558,
+                                                        "children": [],
+                                                        "taxon": 38
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "branch_length": 1.4223474750054885,
+                                                "children": [],
+                                                "taxon": 39
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "branch_length": 1.7169255767748774,
+                                            "children": [],
+                                            "taxon": 40
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "branch_length": 0.04198230527020197,
+                                        "children": [
+                                          {
+                                            "branch_length": 0.02249399291706755,
+                                            "children": [
+                                              {
+                                                "branch_length": 3.457879044913721,
+                                                "children": [],
+                                                "taxon": 41
+                                              },
+                                              {
+                                                "branch_length": 1.4247170445678048,
+                                                "children": [
+                                                  {
+                                                    "branch_length": 0.025935333403126926,
+                                                    "children": [
+                                                      {
+                                                        "branch_length": 0.9397199382321686,
+                                                        "children": [
+                                                          {
+                                                            "branch_length": 0.7536269738295047,
+                                                            "children": [
+                                                              {
+                                                                "branch_length": 0.31387975488111586,
+                                                                "children": [],
+                                                                "taxon": 42
+                                                              },
+                                                              {
+                                                                "branch_length": 0.31387975488111586,
+                                                                "children": [],
+                                                                "taxon": 43
+                                                              }
+                                                            ]
+                                                          },
+                                                          {
+                                                            "branch_length": 1.0675067287106206,
+                                                            "children": [],
+                                                            "taxon": 44
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "branch_length": 1.6326959627685023,
+                                                        "children": [
+                                                          {
+                                                            "branch_length": 0.016120631908425054,
+                                                            "children": [
+                                                              {
+                                                                "branch_length": 0.10259667697169306,
+                                                                "children": [
+                                                                  {
+                                                                    "branch_length": 0.2558133952941688,
+                                                                    "children": [],
+                                                                    "taxon": 45
+                                                                  },
+                                                                  {
+                                                                    "branch_length": 0.2558133952941688,
+                                                                    "children": [],
+                                                                    "taxon": 46
+                                                                  }
+                                                                ]
+                                                              },
+                                                              {
+                                                                "branch_length": 0.16883570187555108,
+                                                                "children": [
+                                                                  {
+                                                                    "branch_length": 0.18957437039031078,
+                                                                    "children": [],
+                                                                    "taxon": 47
+                                                                  },
+                                                                  {
+                                                                    "branch_length": 0.18957437039031078,
+                                                                    "children": [],
+                                                                    "taxon": 48
+                                                                  }
+                                                                ]
+                                                              }
+                                                            ]
+                                                          },
+                                                          {
+                                                            "branch_length": 0.3745307041742869,
+                                                            "children": [],
+                                                            "taxon": 49
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "branch_length": 2.033162000345916,
+                                                    "children": [],
+                                                    "taxon": 50
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "branch_length": 2.2783782586688757,
+                                            "children": [
+                                              {
+                                                "branch_length": 0.8232403152410743,
+                                                "children": [
+                                                  {
+                                                    "branch_length": 0.10389290955251163,
+                                                    "children": [
+                                                      {
+                                                        "branch_length": 0.2748615543683268,
+                                                        "children": [],
+                                                        "taxon": 51
+                                                      },
+                                                      {
+                                                        "branch_length": 0.26410738573606274,
+                                                        "children": [
+                                                          {
+                                                            "branch_length": 0.010754168632264083,
+                                                            "children": [],
+                                                            "taxon": 52
+                                                          },
+                                                          {
+                                                            "branch_length": 0.010754168632264083,
+                                                            "children": [],
+                                                            "taxon": 53
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "branch_length": 0.37875446392083845,
+                                                    "children": [],
+                                                    "taxon": 54
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "branch_length": 0.4944012052070086,
+                                                "children": [
+                                                  {
+                                                    "branch_length": 0.2679989394837481,
+                                                    "children": [
+                                                      {
+                                                        "branch_length": 0.4395946344711561,
+                                                        "children": [],
+                                                        "taxon": 55
+                                                      },
+                                                      {
+                                                        "branch_length": 0.4395946344711561,
+                                                        "children": [],
+                                                        "taxon": 56
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "branch_length": 0.707556874240387,
+                                                    "children": [
+                                                      {
+                                                        "branch_length": 3.6699714517141047e-05,
+                                                        "children": [],
+                                                        "taxon": 57
+                                                      },
+                                                      {
+                                                        "branch_length": 3.6699714517141047e-05,
+                                                        "children": [],
+                                                        "taxon": 58
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "branch_length": 2.85492097663263,
+                                    "children": [
+                                      {
+                                        "branch_length": 0.446249412967207,
+                                        "children": [
+                                          {
+                                            "branch_length": 0.3208200654382143,
+                                            "children": [],
+                                            "taxon": 59
+                                          },
+                                          {
+                                            "branch_length": 0.3208200654382143,
+                                            "children": [],
+                                            "taxon": 60
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "branch_length": 0.7670694784054213,
+                                        "children": [],
+                                        "taxon": 61
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "branch_length": 1.4815413956284234,
+                                "children": [
+                                  {
+                                    "branch_length": 0.21736486721380466,
+                                    "children": [
+                                      {
+                                        "branch_length": 0.27174696737624604,
+                                        "children": [
+                                          {
+                                            "branch_length": 2.033780639382563,
+                                            "children": [],
+                                            "taxon": 62
+                                          },
+                                          {
+                                            "branch_length": 2.033780639382563,
+                                            "children": [],
+                                            "taxon": 63
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "branch_length": 2.2530846202329355,
+                                        "children": [
+                                          {
+                                            "branch_length": 0.01614935627052816,
+                                            "children": [
+                                              {
+                                                "branch_length": 0.03629363025534538,
+                                                "children": [],
+                                                "taxon": 64
+                                              },
+                                              {
+                                                "branch_length": 0.03629363025534538,
+                                                "children": [],
+                                                "taxon": 65
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "branch_length": 0.052442986525873536,
+                                            "children": [],
+                                            "taxon": 66
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "branch_length": 0.6028919931026353,
+                                    "children": [
+                                      {
+                                        "branch_length": 0.21768869793881507,
+                                        "children": [
+                                          {
+                                            "branch_length": 1.7023117829311634,
+                                            "children": [],
+                                            "taxon": 67
+                                          },
+                                          {
+                                            "branch_length": 1.7023117829311634,
+                                            "children": [],
+                                            "taxon": 68
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "branch_length": 1.9200004808699784,
+                                        "children": [],
+                                        "taxon": 69
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "branch_length": 4.224931845520578,
+                            "children": [
+                              {
+                                "branch_length": 0.2671799541746118,
+                                "children": [
+                                  {
+                                    "branch_length": 0.06732037034429261,
+                                    "children": [],
+                                    "taxon": 70
+                                  },
+                                  {
+                                    "branch_length": 0.06732037034429261,
+                                    "children": [],
+                                    "taxon": 71
+                                  }
+                                ]
+                              },
+                              {
+                                "branch_length": 0.3084912460583418,
+                                "children": [
+                                  {
+                                    "branch_length": 0.026009078460562662,
+                                    "children": [],
+                                    "taxon": 72
+                                  },
+                                  {
+                                    "branch_length": 0.026009078460562662,
+                                    "children": [],
+                                    "taxon": 73
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "branch_length": 5.001104416240654,
+                        "children": [
+                          {
+                            "branch_length": 0.95030356318507,
+                            "children": [],
+                            "taxon": 74
+                          },
+                          {
+                            "branch_length": 0.95030356318507,
+                            "children": [],
+                            "taxon": 75
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "branch_length": 4.395837369204552,
+                    "children": [
+                      {
+                        "branch_length": 1.6412605450623312,
+                        "children": [
+                          {
+                            "branch_length": 0.1731342003739158,
+                            "children": [
+                              {
+                                "branch_length": 0.0687500019418934,
+                                "children": [],
+                                "taxon": 76
+                              },
+                              {
+                                "branch_length": 0.0687500019418934,
+                                "children": [],
+                                "taxon": 77
+                              }
+                            ]
+                          },
+                          {
+                            "branch_length": 0.2418842023158092,
+                            "children": [],
+                            "taxon": 78
+                          }
+                        ]
+                      },
+                      {
+                        "branch_length": 1.8831447473781404,
+                        "children": [],
+                        "taxon": 79
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "version": "1.0",
+  "model_expr": "(BAMM 0.1500 (CRBD 0.4000 0.0500) (CRBD 1.0000 0.6500))"
+}

@@ -1,0 +1,26 @@
+\contentsline {section}{\numberline {1}Notation and Setup}{2}{section.1}%
+\contentsline {section}{\numberline {2}The Riccati Structure}{2}{section.2}%
+\contentsline {section}{\numberline {3}TDBD Closed-Form Solution (General Case)}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Model Definition}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Extinction Probability $E(\tau )$}{3}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Branch Propagation Factor}{3}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Full TDBD Log-Likelihood}{4}{subsection.3.4}%
+\contentsline {section}{\numberline {4}CRBD as a Special Case ($z = 0$)}{4}{section.4}%
+\contentsline {subsection}{\numberline {4.1}CRBD Extinction}{4}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}CRBD Branch Factor}{4}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}CRBD Log-Likelihood}{5}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Critical Case $\lambda = \mu $}{5}{subsection.4.4}%
+\contentsline {section}{\numberline {5}CRB and TDB: Pure-Birth Models ($\mu = 0$)}{5}{section.5}%
+\contentsline {subsection}{\numberline {5.1}CRB ($\lambda $ constant, $\mu = 0$)}{5}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}TDB ($\lambda (\tau )$ time-varying, $\mu = 0$)}{5}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Degeneracy Relations}{5}{section.6}%
+\contentsline {section}{\numberline {7}BAMM: Hybrid Analytical--Numerical Computation}{6}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Multi-State ODE System}{6}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Key Observation: One-Way Coupling}{6}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Dimension Reduction}{6}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Nested BAMM}{6}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}D Propagation}{6}{subsection.7.5}%
+\contentsline {section}{\numberline {8}Numerical Stability}{7}{section.8}%
+\contentsline {section}{\numberline {9}Computational Complexity}{7}{section.9}%
+\contentsline {section}{\numberline {10}Verification}{7}{section.10}%
+\contentsline {section}{\numberline {11}Summary of Formulas}{8}{section.11}%
