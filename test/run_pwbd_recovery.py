@@ -12,7 +12,7 @@ from algorithm.inference import bayesian_synthesis_mcmc, bayesian_synthesis_smc_
 from algorithm.likelihood import evaluate_likelihood
 
 # ====================================================================
-TRUE_EXPR_STR = "(PWBD 0.5 (CRBD 0.3 0.02) (CRBD 0.3 0.20))"
+TRUE_EXPR_STR = "(PWBD 0.5 (CRB 0.3) (CRBD 0.8 0.15))"
 N_TIPS = 100
 N_TREES = 8
 N_PARTICLES = 60

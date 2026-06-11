@@ -1,0 +1,100 @@
+CRBD Control Experiment
+  TRUE: (CRBD 0.3 0.05)
+  100 tips x 8 trees
+============================================================
+  Tree 0: n=100, T=17.57
+  Tree 1: n=100, T=12.45
+  Tree 2: n=100, T=18.07
+  Tree 3: n=100, T=14.33
+  Tree 4: n=100, T=14.46
+  Tree 5: n=100, T=19.52
+  Tree 6: n=100, T=14.04
+  Tree 7: n=100, T=15.96
+
+True CRBD cum-logL: 1122.07
+
+--- SMC-cum (60 particles, 25 moves, 8 trees) ---
+  SMC 轮 1/8: ESS=1.5 < 30.0, 重采样
+  SMC 轮 1/8: best cum-logL = 144.4596, E = (NoisyPhylo (Noise 0.0597) (CRBD 0.3895 0.1770))
+  SMC 轮 2/8: ESS=29.0 < 30.0, 重采样
+  SMC 轮 2/8: best cum-logL = 292.8730, E = (NoisyPhylo (Noise 0.0132) (CRBD 0.3908 0.1536))
+  SMC 轮 3/8: best cum-logL = 434.3290, E = (NoisyPhylo (Noise 0.0326) (CRBD 0.3709 0.1222))
+  SMC 轮 4/8: best cum-logL = 578.6847, E = (NoisyPhylo (Noise 0.0099) (CRBD 0.3752 0.1392))
+  SMC 轮 5/8: best cum-logL = 708.7474, E = (NoisyPhylo (Noise 0.0020) (CRBD 0.3666 0.1331))
+  SMC 轮 6/8: ESS=28.2 < 30.0, 重采样
+  SMC 轮 6/8: best cum-logL = 838.2268, E = (NoisyPhylo (Noise 0.0141) (CRBD 0.3539 0.1116))
+  SMC 轮 7/8: best cum-logL = 979.7150, E = (NoisyPhylo (Noise 0.0029) (CRBD 0.3454 0.0959))
+  SMC 轮 8/8: best cum-logL = 1125.3037, E = (NoisyPhylo (Noise 0.0074) (CRBD 0.3461 0.0965))
+
+============================================================
+RESULTS
+============================================================
+Model counts: {'CRB': 41, 'CRBD': 19}
+Best cum-logL: 1125.3037
+Best expr: (NoisyPhylo (Noise 0.0074) (CRBD 0.3461 0.0965))
+True CRBD cum-logL: 1122.07
+
+Per-model best:
+  CRBD  : 1125.3037  (NoisyPhylo (Noise 0.0074) (CRBD 0.3461 0.0965))
+  CRB   : 1121.2802  (NoisyPhylo (Noise 0.0001) (CRB 0.2997))
+
+
+
+
+PWBD Recovery Experiment
+  TRUE: (PWBD 0.5 (CRB 0.3) (CRBD 0.8 0.15))
+  100 tips x 8 trees
+  SMC: 60 particles, 25 moves/round
+============================================================
+  Tree 0: n=100, T=7.04
+  Tree 1: n=100, T=5.97
+  Tree 2: n=100, T=4.02
+  Tree 3: n=100, T=8.02
+  Tree 4: n=100, T=6.10
+  Tree 5: n=100, T=6.83
+  Tree 6: n=100, T=7.30
+  Tree 7: n=100, T=8.53
+
+True model cum-logL: 1727.42
+
+--- Quick MCMC on tree 0 (500 iters) ---
+  Models: {'CRBD': 17, 'PWBD': 471, 'TDB': 12}
+  Best: 226.7224 (NoisyPhylo (Noise 0.0067) (PWBD 0.3698 (CRBD 0.7169 0.0187) (CRBD 0.8927 0.5889)))
+  Best PWBD: 226.7224 (NoisyPhylo (Noise 0.0067) (PWBD 0.3698 (CRBD 0.7169 0.0187) (CRBD 0.8927 0.5889)))
+
+--- SMC-cum (60 particles, 25 moves, 8 trees) ---
+  SMC 轮 1/8: ESS=3.3 < 30.0, 重采样
+  SMC 轮 1/8: best cum-logL = 226.7946, E = (NoisyPhylo (Noise 0.0040) (PWBD 0.4439 (CRBD 0.7227 0.0083) (CRBD 0.8914 0.7261)))
+  SMC 轮 2/8: best cum-logL = 455.9938, E = (NoisyPhylo (Noise 0.0070) (PWBD 0.3688 (CRBD 0.7363 0.0855) (CRBD 1.1815 0.8836)))
+  SMC 轮 3/8: ESS=9.4 < 30.0, 重采样
+  SMC 轮 3/8: best cum-logL = 698.2262, E = (NoisyPhylo (Noise 0.0099) (PWBD 0.6331 (CRBD 0.7405 0.0333) (CRBD 1.5295 1.0139)))
+  SMC 轮 4/8: best cum-logL = 916.9474, E = (NoisyPhylo (Noise 0.0249) (PWBD 0.6125 (CRBD 0.7408 0.0551) (CRBD 1.4880 1.0800)))
+  SMC 轮 5/8: best cum-logL = 1146.5675, E = (NoisyPhylo (Noise 0.0171) (PWBD 0.6125 (CRBD 0.7408 0.0664) (CRBD 1.3563 1.0914)))
+  SMC 轮 6/8: best cum-logL = 1380.6489, E = (NoisyPhylo (Noise 0.0178) (PWBD 0.6408 (CRBD 0.7807 0.1157) (CRBD 1.3004 1.0826)))
+  SMC 轮 7/8: ESS=23.9 < 30.0, 重采样
+  SMC 轮 7/8: best cum-logL = 1611.8158, E = (NoisyPhylo (Noise 0.0003) (PWBD 0.6138 (CRBD 0.8088 0.1925) (CRBD 1.5790 1.5787)))
+  SMC 轮 8/8: best cum-logL = 1832.4722, E = (NoisyPhylo (Noise 0.0130) (PWBD 0.6138 (CRBD 0.7651 0.1555) (CRBD 1.6128 1.5821)))
+
+============================================================
+RESULTS
+============================================================
+Model counts: {'PWBD': 60}
+Best cum-logL: 1832.4722
+Best expr: (NoisyPhylo (Noise 0.0130) (PWBD 0.6138 (CRBD 0.7651 0.1555) (CRBD 1.6128 1.5821)))
+True cum-logL: 1727.42
+
+Per-model best:
+  PWBD  : 1832.4722  (NoisyPhylo (Noise 0.0130) (PWBD 0.6138 (CRBD 0.7651 0.1555) (CRBD 1.6128 1.5821)))
+
+
+
+
+
+
+
+
+
+
+
+
+

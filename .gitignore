@@ -205,3 +205,34 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# LaTeX auxiliary files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.out
+*.toc
+*.synctex.gz
+*.synctex(busy)
+*.nav
+*.snm
+*.vrb
+*.run.xml
+*-blx.bib
+
+# C/C++ build artifacts
+*.o
+*.obj
+*.exe
+
+# Generated data (large/reproducible)
+data/generated/pwbd_smc_recovery/
+data/generated/pwbd_recovery/
+data/generated/crbd_control/
+
+# VS Code
+.vscode/
